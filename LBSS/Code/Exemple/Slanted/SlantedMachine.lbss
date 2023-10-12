@@ -1,0 +1,43 @@
+//the Slanted FSS machine
+//x[0] stores l and x[1] stores r
+	Init:
+	>; goto test
+
+	Left:
+	a = h;
+	h += a;
+	>;
+	h += a;
+	<; goto Up
+
+	Right:
+	>;
+	a = h;
+	h += a;
+	<;
+	h += a; goto Up
+
+	Up:
+	h -= 1;
+	>;
+	h -= 1;
+
+	test:
+	a = 2;
+	a -= h;
+	Branch Next, Next, labelSplit0;
+
+	Next:
+	//for real languages, if statements and the likes take care of this annoyance (labeling the next line). I've thought of some hacks but none satisfying.
+	a += h;
+	<;
+	a -= h;
+	Branch labelDelay, labelDelay, labelSplit1;
+
+	labelDelay:
+	a =0;
+	Delay Up;
+	labelSplit0:
+	<;
+	labelSplit1:
+	Split Left, Right;

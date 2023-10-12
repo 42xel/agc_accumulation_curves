@@ -1,0 +1,35 @@
+//examplifies load, toAGC and toUBT
+//usage
+/*
+python3 ../../lbss.py blanc_manger.lbss ./agc/
+*/
+
+load_lbss_machine machine.lbss mach
+
+create_lbss_configuration > conf << FIN
+//to fill the tape before running the machine,
+x[-2] = 0
+x[-1] = 1
+x[0] = 2
+x[1] = 1
+x[2] = 0
+FIN
+
+
+//toAGC_run mach conf Run.agc Run.pdf
+
+toAGC_ubt mach conf blanc_manger.agc blanc_manger.pdf 7 Init 500000 0 1/5
+
+//for debugging purposes
+//run mach conf run_name -1
+//print run_name
+
+
+toAGC_run mach conf Run.agc Run.pdf Left 1/10 1000
+
+run mach conf run_name// Right
+print run_name
+
+
+
+draw_ubt mach conf 9

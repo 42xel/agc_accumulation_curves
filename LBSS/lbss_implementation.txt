@@ -1,0 +1,39 @@
+******* agc files *******
+- Signal machine: the framework for lbss in agc
+- program: creates a signal machine for a given lbss program (?with given initial parameters?)
+- 
+
+
+
+*** java/other ****
+- compilator lbss code -> agc
+- ?(fridge) non chronological simulation. ?
+
+
+
+**** Signal machine framework *****
+
+- registers
+  - encoding? ?negative and zero values?
+  - ?limitations (see computing)?
+- heads:
+  - reading / writing
+  - movement
+  - copy
+- instruction flow:
+  - regular
+  - branching
+- Computing
+  - linear stuff
+
+initial config?
+
+**** program ****
+
+
+%run et autre commandes similarite avec programmation logique, prédicat
+
+
+
+
+

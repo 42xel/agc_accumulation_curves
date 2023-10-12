@@ -1,0 +1,125 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Définition de différentes macros pour le
+%% graphisme, 
+%% avec pstricks, et surtout tikz
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ProvidesPackage{h_graphics}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{h_color}
+
+
+%%
+%% To define the unit length for latex and package tikz and pstricks
+%%
+
+\providecommand{\SetUnitlength}[1]{%
+  \setlength{\unitlength}{#1}%
+  \ifx\tikzpicture\undefined\relax\else%
+  \tikzset{x=\unitlength}%
+  \tikzset{y=\unitlength}%
+  \fi%
+  \ifx\PSTricksLoaded\undefined\relax\else%
+  \psset{unit=\unitlength}%
+  \fi%
+}
+
+%%
+%% positionnement centrés
+%%
+% \Pxy
+% x -> c centre   l left  b- bottom  t -> top
+% y -> t text     m math
+\newcommand{\verticalSettingSet}{\raisebox{.2em}{\rule[-2em]{0em}{4em}}} % pour qu'il n'y ait pas de diff d'alignement entre a p h f
+\def\Pct(#1)#2{\put(#1){\makebox(0,0){#2\verticalSettingSet}}}
+\def\Plt(#1)#2{\put(#1){\makebox(0,0)[l]{#2\verticalSettingSet}}}
+\def\Prt(#1)#2{\put(#1){\makebox(0,0)[r]{#2\verticalSettingSet}}}
+\def\Ptt(#1)#2{\put(#1){\makebox(0,0)[t]{#2\verticalSettingSet}}}
+\def\Pbt(#1)#2{\put(#1){\makebox(0,0)[b]{#2\verticalSettingSet}}}
+%
+\def\Pcm(#1)#2{\Pct(#1){$#2$}}
+\def\Plm(#1)#2{\Plt(#1){$#2$}}
+\def\Prm(#1)#2{\Prt(#1){$#2$}}
+\def\Ptm(#1)#2{\Ptt(#1){$#2$}}
+\def\Pbm(#1)#2{\Pbt(#1){$#2$}}
+% minipage
+\def\PcMini(#1)#2#3{\Pct(#1){\begin{minipage}{#2}#3\end{minipage}}}
+
+
+%% To put coordinates in a tikzpicture
+%% with a debug mode to see them
+\newif\ifDebugPicture
+\DebugPicturefalse
+
+\newcommand{\CoorNode}[1]{ coordinate (#1) \ifDebugPicture node[opacity=0.5]  {\scriptsize #1} \fi }
+
+
+%%%% To find the intersection (1st if many) of two named path
+\newcommand{\SetIntersect}[3][I]{%
+  %% #1 -> intersection name
+  %% #2 -> path name
+  %% #3 -> path name
+  \path [name intersections={of=#2 and #3,name=#1}] ; %
+  \path (#1-1) \CoorNode{#3} ;
+}
+
+%%
+%% Compute the intersection of 2 lines.
+%% Each line is given by
+%% - a point
+%% - a speed
+\newcommand{\SetIntersectLines}[5][K]{%
+  %% #1 name for intersection point
+  %% #2 -> point A
+  %% #3 -> speed from #2 (point A)
+  %% #4 -> point B
+  %% #5 -> speed from #5 (point B)
+  \begin{pgfinterruptboundingbox}
+    \path (#2) ; %
+    \pgfgetlastxy{\XCoordA}{\YCoordA} ; %
+    \path (#4) ; %
+    \pgfgetlastxy{\XCoordB}{\YCoordB} ; %
+    \path ( { ( (#3)*(#5)*((\YCoordB)-(\YCoordA)) + (\XCoordA)*(#5) - (\XCoordB)*(#3) )  / ( (#5) - (#3) ) }
+    ,       { ( (\XCoordB)-(\XCoordA) + (\YCoordA)*(#3) - (\YCoordB)*(#5) )  / ( (#3) - (#5) ) } )
+    \CoorNode {#1} ;
+  \end{pgfinterruptboundingbox}
+}
+
+
+%%
+%% Compute the intersection of a line with a horizontale line.
+\newcommand{\SetIntersectHLine}[4][K]{%
+  %% #1 name for intersection point
+  %% #2 -> point A
+  %% #3 -> speed from #2 (point A)
+  %% #4 -> point B (only it height matters)
+  \begin{pgfinterruptboundingbox}
+    \path (#2) ; %
+    \pgfgetlastxy{\XCoordA}{\YCoordA} ; %
+    \path (#4) ; %
+    \pgfgetlastxy{\XCoordB}{\YCoordB} ; %
+    \path ( { \XCoordA + (#3) * ( \YCoordB - \YCoordA ) } 
+    ,       \YCoordB )
+    \CoorNode {#1} ;
+  \end{pgfinterruptboundingbox}
+
+}
+
+%%
+%% Compute the intersection of a line with a horizontale line.
+\newcommand{\SetIntersectHeight}[4][K]{%
+  %% #1 name for intersection point
+  %% #2 -> point A
+  %% #3 -> speed from #2 (point A)
+  %% #4 -> height to reach
+  \begin{pgfinterruptboundingbox}
+    \path (#2) ; %
+    \pgfgetlastxy{\XCoordA}{\YCoordA} ; %
+    \path ( { \XCoordA + (#3) * ( ( #4 ) * 1\unitlength - \YCoordA ) } 
+    ,       { ( #4 )*1\unitlength } )
+    \CoorNode {#1} ;
+  \end{pgfinterruptboundingbox}
+}
+

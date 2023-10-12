@@ -1,0 +1,10 @@
+loop:
+>;
+beginning:
+a=0;
+a+=h;
+Branch next, next, loop;
+next:
+a=0;
+<;
+end;

@@ -1,0 +1,9 @@
+makefile
+_minted-*/
+*.gz
+*.toc
+*.blg
+*.lbss.auxiliary
+*.pdf
+*#
+LBSS_model.pdf

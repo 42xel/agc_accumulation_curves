@@ -1,0 +1,191 @@
+\newcommand{\FRIDGE}[1]{%
+  {\sf\color{VeryLightBlue}{#1}}%	comment to hide
+%  {\sf\color{Blue}{#1}}%			To make it more visible
+}
+
+%comment whole command to turn todo into error
+\newcommand{\todo}[1]{%
+{\sf\color{Red}{#1}}%
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% Writing         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+% \newcommand{\Tild}{{\char126}}
+% \newcommand{\Arob}{{\char64}}
+
+\providecommand{\Latin}[1]{\text{#1}\xspace} %% Latin is not \it or \sl in English
+\providecommand{\viceversa}{\Latin{vice-versa}}
+\providecommand{\EtAl}{\Latin{{et al.}}}
+\providecommand{\ie}{\Latin{i.e.}}
+\providecommand{\eg}{\Latin{e.g.}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% Theorems & Environnements       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+
+%{%
+%	\theoremstyle{definition}%
+%	\newtheorem{definition}[theorem]{Definition}
+%}
+
+\newtheorem{Theorem}{Theorem}
+\newtheorem{Corollary}[Theorem]{Corollary}
+\newtheorem{Conjecture}[Theorem]{Conjecture}
+\newtheorem{Proposition}[Theorem]{Proposition}
+\newtheorem{Lemma}[Theorem]{Lemma}
+
+%{% \theorembodyfont{\rmfamily}
+%	\theoremstyle{definition}%
+%	\newtheorem{Definition}[Theorem]{Definition}
+%}
+
+\newenvironment{Proof}{\paragraphe{\it Proof} }{ {$q.e.d.$\smallskip}}
+\newenvironment{Remark}{\paragraphe{Remark}}{\smallskip}
+
+\newcommand{\RefFigure}[1]{Figure\,\ref{#1}}
+\newcommand{\RefFig}[1]{Fig.\,\ref{#1}}
+
+\newcommand{\RefTHeorem}[1]{Theorem\,\ref{#1}}
+\newcommand{\RefTh}[1]{Th.\,\ref{#1}}
+\newcommand{\RefLem}[1]{Lem.\,\ref{#1}}
+\newcommand{\RefLemma}[1]{Lemma\,\ref{#1}}
+\newcommand{\RefCor}[1]{Cor.\,\ref{#1}}
+\newcommand{\RefCon}[1]{Conj.\,\ref{#1}}
+
+\newcommand{\RefDef}[1]{Def.\,\ref{#1}}
+
+\newcommand{\RefPRoposition}[1]{Proposition\,\ref{#1}}
+\newcommand{\RefProp}[1]{Prop.\,\ref{#1}}
+
+\newcommand{\RefEq}[1]{(\ref{#1})}
+
+\newcommand{\RefSection}[1]{Section\,\ref{#1}}
+\newcommand{\RefSec}[1]{Sect.\,\ref{#1}}
+
+\newcommand{\RefSubsection}[1]{Subsection\,\ref{#1}}
+\newcommand{\RefSubsec}[1]{Subsect.\,\ref{#1}}
+
+\newcommand{\RefAlgorithm}[1]{Algorithm\,\ref{#1}}
+\newcommand{\RefAlgo}[1]{Algo.\,\ref{#1}}
+
+
+
+\newcommand{\VCenter}[1]{\raisebox{-.45\height}{\raisebox{\depth}{#1}}}
+
+
+\newcounter{Example}
+\newcommand{\PicExample}[2]{%
+	\begin{figure}[hbt]
+		\centering
+		\mbox{}\hfill%%
+		\includegraphics[scale=#2]{test_#1.pdf}%
+		\hfill%
+		\hfill%
+		% \includegraphics[scale=#2]{test_#1_sim.pdf}%    
+		\hfill\hfill\mbox{}%
+		\stepcounter{Example}
+		\caption{Example \theExample.}
+		\label{fig:annexe:example:#1}
+	\end{figure}
+}
+
+
+
+\newenvironment{MSlist}[1][]{%
+	\begingroup\small\footnotesize\scriptsize%
+	\begin{tabular}{@{}r@{\,}c@{\,}>{\begin{math}}c<{\end{math}}@{}}%
+		&\,{\small\footnotesize\bf #1Meta-signal\,}%
+		&\,\text{\small\footnotesize\bf Speed}\!%
+		\\[.1em]
+	}{%
+	\end{tabular}%
+	\endgroup%
+}
+
+\newenvironment{CRlist}{%
+	\begingroup\small\footnotesize\scriptsize%
+	\begin{tabular}{@{}r@{\,}>{\raggedleft\arraybackslash\{\,}r<{\,\}}@{\,$\to$\,\{\,}>{\raggedright\arraybackslash}l<{\,\}}}%
+	}{%
+	\end{tabular}\endgroup}
+
+\newenvironment{AugCRlist}{%
+	\begingroup\small\footnotesize\scriptsize%
+	\begin{tabular}{@{}r@{\,}>{\raggedleft\arraybackslash\{\,}r<{\,\}}@{\,}%
+			r%
+			@{\,\{\,}>{\raggedright\arraybackslash}l<{\,\}}}%
+	}{%
+	\end{tabular}\endgroup}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% FOR V-spacing
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\newcommand{\NTVS}{\vspace{-1mm}}
+\newcommand{\NVS}{\vspace{-2mm}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% FOR setting the unit length at once for picture, pstricks and tikz at once.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\providecommand{\SetUnitlength}[1]{%
+	\setlength{\unitlength}{#1}%
+	\ifx\tikzpicture\undefined\relax\else%
+	\tikzset{x=#1}%
+	\tikzset{y=#1}%
+	\fi%
+	\ifx\PSTricksLoaded\undefined\relax\else%
+	\psset{unit=#1}%
+	\fi%
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% TIKZ style for ray
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\tikzstyle{ray_style}=[fill=yellow!60!white,draw=none]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% For simplifying MS table constructions 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\newcommand{\foreachASig}[1]{%
+	&\csname Sig#1\endcsname &0\\
+	&\csname SigSL#1\endcsname &-1\\
+	&\csname SigSR#1\endcsname &1
+}
+
+% \newcommand{\foreachASigParam}[3]{%
+%   &\csname Sig#1\endcsname &#2\\
+%   &\csname SigSL#1\endcsname &#3\\
+%   &\csname SigSR#1\endcsname &#2
+% }
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% ;;; Local Variables: ***
+% ;;; eval: (flyspell-mode) ***
+% ;;; eval: (ispell-change-dictionary "american") ***
+% ;;; eval: (flyspell-buffer) ***
+% ;;; End: ***

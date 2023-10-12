@@ -1,0 +1,50 @@
+//machine reading bits of x[0] and interpreting them to draw a UBT. x[1] serves as a unit, x[2] as a counter
+//x[is a number in [0, 2(, the unit bit is the one we are curently reading. 1 is for split, zero is for delay
+
+Init:
+//reading the first bit
+	a = h - 1;
+	Branch  LBLDelay, LBLSplit1, LBLSplit1;
+
+
+LBLDelay:
+	a += h;
+
+LBLSplit1:
+//removing the first bit
+	a += h;
+	h -= a;
+	>>;
+	h = 2 * h;
+	<<;
+	Split Left Right;
+
+Left:
+
+Right:
+	
+
+
+Test_a_nonpos:
+	a = h;
+	<<;
+	a -= h;
+	Branch Test_a_nonpos1, Test_a_nonpos2, Test_a_nonpos2;
+	Test_a_nonpos1:
+		a += h; 
+		>; goto Test_final
+	Test_a_nonpos2:
+		a = h;
+		>; goto Test_final
+
+Test_final:
+	a -= 2;
+	Branch LSplit, LDelay, LDelay;
+
+LDelay:
+	Delay Up;
+
+LSplit:
+	Split Left, Right;
+
+end;

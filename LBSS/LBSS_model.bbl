@@ -1,0 +1,19 @@
+\providecommand{\href}[2]{#2}\makeatletter
+  \@ifundefined{mathbb}{\long\def\mathbb{\mathsf}} \makeatother
+\begin{thebibliography}{BSS89}
+
+\bibitem[BSS89]{blum1989}
+Lenore Blum, Mike Shub, and Steve Smale.
+\newblock On a theory of computation and complexity over the real numbers:
+  $np$- completeness, recursive functions and universal machines.
+\newblock {\em Bull. Amer. Math. Soc. (N.S.)}, 21(1):1--46, 07 1989.
+
+\bibitem[DL07]{durand-lose07cie}
+J{\'e}r{\^o}me Durand-{L}ose.
+\newblock Abstract {G}eometrical {C}omputation and the {L}inear {B}lum, {S}hub
+  and {S}male {M}odel.
+\newblock In Barry~S. Cooper, Benedikt. L\"owe, and Andrea Sorbi, editors, {\em
+  Computation and Logic in the Real World, 3rd Conf. Computability in Europe
+  (CiE 2007)}, number 4497 in LNCS, pages 238--247. Springer, 2007.
+
+\end{thebibliography}

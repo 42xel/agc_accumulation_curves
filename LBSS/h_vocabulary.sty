@@ -1,0 +1,361 @@
+%% Vocabulary handler
+%% At first use:
+%% - generate tables of symbols
+%% - generate list of macro and symbols
+%% - insert into index
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\ProvidesPackage{h_vocabulary}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% TODO
+%% - Add if pour mettre ou non dans index... dès la déclaration
+%% - Add no index if arg empty
+%% - table_generic -> h_....
+%% - add possible arguments & default
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+%%
+%%
+%%  DeclareRobustCommand ??
+%%
+%%
+
+\RequirePackage{xspace}
+
+\RequirePackage{makeidx}
+% Symbols can be put directly -or not- into index
+
+\RequirePackage{amsgen}
+% for \@ifempty{}{}{}
+
+\RequirePackage{currfile}
+% to know the current file for all
+
+\RequirePackage{longtable}
+
+\RequirePackage{fancyvrb}
+
+\RequirePackage{amssymb} % for \mathbb
+
+\RequirePackage{h_color} % for DarkGreen
+
+%% Explained with boolean declarations
+\DeclareOption{index}{\JDLvocabularyInIndextrue}
+\DeclareOption{inactive}{\JDLvocabularyActivefalse}
+\DeclareOption{track}{\JDLvocabularyTracktrue\JDLvocabularyTrackLocaltrue}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% INDEX
+%% To (de)activate the automatic indexing at first use
+%% It can be switched at any time but it is considered at \JDLvocabulary declaration
+%% Default: not in index
+%% Option: all in index
+\newif\ifJDLvocabularyInIndex
+\JDLvocabularyInIndexfalse
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% INACTIVE 
+%% To deactivate the first use hook momentarily.
+%% if switched, they will be targeted at first next use
+%% This is used to create whole table without making noise the other tables
+%% Default: active
+%% Option: inactive all to deactivate all (from the beginning of the doc)
+\newif\ifJDLvocabularyActive
+\JDLvocabularyActivetrue
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% TRACK
+%% To track and debug:
+%% - first declaration in DarkGreen
+%% - other declaration in Blue
+%% Symbols unused without being declared are not colored
+%% First use may be found.
+%% Default: no coloring
+%% Option: activate coloring
+%% NB: end spaces might be messed up so that \xspace is added to try to cope with
+\newif\ifJDLvocabularyTrack
+\JDLvocabularyTrackfalse
+%% For local use
+\newif\ifJDLvocabularyTrackLocal
+\JDLvocabularyTrackLocalfalse
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\ProcessOptions
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% MATH: typo
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% To provide simple way to write macros
+\providecommand{\JDLvocabularyXspace}[1]{#1\xspace}
+\providecommand{\JDLvocabularyTextXspace}[1]{\JDLvocabularyXspace{\text{#1}}}
+\providecommand{\JDLvocabularyMathXspace}[1]{\ifmmode #1\else\JDLvocabularyXspace{\ensuremath{#1}}\fi}
+\providecommand{\JDLvocabularyMathBBXspace}[1]{\JDLvocabularyMathXspace{\mathbb{#1}}}
+\providecommand{\JDLvocabularyMathCalXspace}[1]{\JDLvocabularyMathXspace{\mathcal{#1}}}
+
+
+%% So that we do not need to care about accumulating \xspace
+\xspaceaddexceptions{\xspace}
+\xspaceaddexceptions{\color}
+\xspaceaddexceptions{\JDLvocabularyTracktrue}
+\xspaceaddexceptions{\JDLvocabularyTrackLocaltrue}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% TABLE OF SYMBOLS
+%% used in the paper with page ref
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\newcommand{\JDLvocabularySymbol}[2]{%
+  \addtocontents{vocdef}{\string\JDLvocabularySymbLine{\string #1}{#2}{\thepage}}}
+\newcommand{\JDLvocabularySymbolCS}[2]{%
+  \addtocontents{vocdef}{\string\JDLvocabularySymbLine{\expandafter\string\csname #1\endcsname}{#2}{\thepage}}}
+\newcommand{\JDLvocabularySymbName}{Table of symbols}
+
+\def\JDLvocabularyTableofsymbols{{
+    \JDLvocabularyTrackLocalfalse%
+    \newcommand{\JDLvocabularySymbLine}[3]{{##1}&{##2}&{##3}\\}%
+    \small\parindent0cm%
+    
+    \subsection*{\JDLvocabularySymbName}%
+    \nopagebreak
+    \begin{longtable}{@{}c@{}p{.8\textwidth}@{}c@{}}
+      {\normalsize\bf  Symbol}&\centering{\normalsize\bf Definition}&{\normalsize\bf Page}\\[.3em]
+      \endhead
+      \JDLvocabularyTrackLocalfalse
+      \makeatletter
+      \@input{\jobname.vocdef}
+      \makeatother%
+    \end{longtable}
+    \smallskip
+
+    \expandafter\newwrite\csname tf@vocdef\endcsname%
+    \immediate\openout \csname tf@vocdef\endcsname \jobname.vocdef\relax%
+  }}
+
+
+\newcommand{\JDLvocabularyVocabulary}[3]{\addtocontents{vocmacro}{\string\JDLvocabularyVocabularyLine{\string #1}{\string #2}{#3}{\thepage}}}
+\newcommand{\JDLvocabularyVocabularyCS}[2]{\addtocontents{vocmacro}{\string\JDLvocabularyVocabularyLine{\expandafter\string\csname #1\endcsname}{\expandafter\string\csname #1\endcsname}{#2}{\thepage}}}
+\newcommand{\JDLvocabularyVocabularyName}{Table of definitions of used vocabulary}
+
+
+\def\JDLvocabularyTableofVocabulary{{
+    \JDLvocabularyTrackLocalfalse%
+    \newcommand{\JDLvocabularyVocabularyLine}[4]{{\sf\string##1}&{##2}&{##3}&{##4}\\}%
+    \small\parindent0cm%
+    
+    \subsection*{\JDLvocabularyVocabularyName}%
+    \nopagebreak
+    \begin{longtable}{@{}l@{}c@{}p{.45\textwidth}@{}c@{}}
+      \centering{\normalsize\bf  Command}&{\normalsize\bf  Symbol}&\centering{\normalsize\bf Definition}&{\normalsize\bf Page}\\[.3em]
+      \endhead
+      \makeatletter
+      \@input{\jobname.vocmacro}
+      \makeatother%
+    \end{longtable}
+
+    \smallskip
+    
+    \expandafter\newwrite\csname tf@vocmacro\endcsname%
+    \immediate\openout \csname tf@vocmacro\endcsname \jobname.vocmacro\relax%
+  }}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% \JDLvocabularyTableAllDeclaration
+%% To print all definition by order of definition and indicating files
+
+\newcommand{\JDLvocabularyAllDeclare}[3]{\addtocontents{vocmacroall}{\string\JDLvocabularyAllDeclareLine{\string#1}{#2}{{#3}}}}
+\newcommand{\JDLvocabularyAllDeclareCS}[3]{\addtocontents{vocmacroall}{\string\JDLvocabularyAllDeclareLine{\expandafter\string#1}{#2}{{#3}}}}
+\newcommand{\JDLvocabularyAllDeclareName}{Table of definitions of available vocabulary}
+
+
+\def\JDLvocabularyTableAllDeclaration{{
+    \JDLvocabularyActivefalse%
+    \small\parindent0cm%
+
+    \newcommand{\JDLvocabularyAllDeclareLine}[3]{{##1}&{##2}&{\sf ##3}\\}
+    \catcode`_=12 %% to treat correctly _ in file names !
+    \subsection*{\JDLvocabularyAllDeclareName}%
+    \nopagebreak
+    \begin{longtable}{@{}c@{\,}p{.65\textwidth}@{\,}l@{}}
+      {\normalsize\bf  Symbol}&\centering{\normalsize\bf Definition}&{\normalsize\bf File}\\[.3em]
+      \endhead
+      \makeatletter
+      \@input{\jobname.vocmacroall}
+      \makeatother%
+    \end{longtable}
+    
+    \smallskip
+
+    \expandafter\newwrite\csname tf@vocmacroall\endcsname%
+    \immediate\openout\csname tf@vocmacroall\endcsname\jobname.vocmacroall\relax%
+  }}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% \JDLvocabulary
+%% #1 -> command
+%% #2 -> associated latex expansion 
+%% #3 -> extra index entry (just the symbol if empty) 
+%% #4 -> description
+
+\newcommand{\JDLvocabulary}[4]{%
+  \ifx#1\DoNotDefineMe  % undefined
+  \ifJDLvocabularyInIndex%
+  {%
+    \JDLvocabularyActivefalse%
+    \local@JDLvocabulary{#1}{#2}{#3}{#4}{\index{#2}\@ifempty{#3}{}{\index{#3}}}%
+  }%
+  \else%
+  {%
+    \JDLvocabularyActivefalse%
+    \local@JDLvocabulary{#1}{#2}{#3}{#4}{}%
+  }
+  \fi%
+  \JDLvocabularyAllDeclare{#1}{#4}{\currfilename}%
+  \else %  already defined
+  \@latex@error{\noexpand #1 already defined}%\@ehc
+  \fi
+}
+
+\newcommand{\local@JDLvocabulary}[5]{%
+  \protected\gdef#1{%
+    \ifJDLvocabularyActive%
+    \JDLvocabularyActivefalse%
+    \ifJDLvocabularyTrack%
+    \protected\gdef#1{%
+      \ifJDLvocabularyTrackLocal%
+      \colorlet{current}{.}%
+      \color{Blue}%
+      \JDLvocabularyTrackLocalfalse% %% To avoid color spreading
+      #2%
+      \JDLvocabularyTrackLocaltrue
+      \color{current}%
+      \else%
+      #2%
+      \fi%
+      \xspace
+    }%
+    \else%
+    \protected\gdef#1{#2}%
+    \fi%
+    \JDLvocabularySymbol{#2}{#4}%
+    \JDLvocabularyVocabulary{#1}{#2}{#4}%
+    #5%
+    \JDLvocabularyActivetrue%
+    \fi%
+    % 
+    \ifJDLvocabularyTrack%
+    \ifJDLvocabularyTrackLocal%
+    \colorlet{current}{.}%
+    \color{DarkGreen}%
+    \JDLvocabularyTrackLocalfalse% %% To avoid color spreading
+    #2%
+    \JDLvocabularyTrackLocaltrue%
+    \color{current}%
+    \xspace%
+    \else%
+    #2%
+    \fi%
+    \else%
+    #2%
+    \fi%
+  }%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% \JDLvocabularyCS  
+%% #1 -> command but as a sequence of letter only (\csname... \endcsname is added inside)
+%% #2 -> associated latex expansion 
+%% #3 -> extra index entry (just the symbol if empty) 
+%% #4 -> description
+
+\newcommand{\JDLvocabularyCS}[4]{%
+  \expandafter\ifx\csname #1\endcsname\relax%
+  {\JDLvocabularyActivefalse%
+    \ifJDLvocabularyInIndex%
+    \local@JDLvocabularyCS{#1}{#2}{#3}{#4}{\index{#2}\@ifempty{#3}{}{\index{#3}}}%
+    \else%
+    \local@JDLvocabularyCS{#1}{#2}{#3}{#4}{}%
+    \fi%
+  }%
+  \expandafter\JDLvocabularyAllDeclareCS{\csname #1\endcsname}{#4}{\currfilename}%
+  \else %  already defined
+  \@latex@error{\noexpand#1 already defined}%\@ehc
+  \fi%
+}
+
+\newcommand{\local@JDLvocabularyCS}[5]{% 
+  \expandafter\protected\expandafter\gdef\csname #1\endcsname{%
+    \ifJDLvocabularyActive%
+    \JDLvocabularyActivefalse%
+    \ifJDLvocabularyTrack%
+    \expandafter\protected\expandafter\gdef\csname #1\endcsname{%
+      \ifJDLvocabularyTrackLocal%
+      \colorlet{current}{.}%
+      \color{Blue}%
+      \JDLvocabularyTrackLocalfalse% %% To avoid color spreading
+      #2%
+      \JDLvocabularyTrackLocaltrue%
+      \color{current}%
+      \else
+      #2%
+      \fi
+      \xspace%
+    }%
+    \else%
+    \expandafter\protected\expandafter\gdef\csname #1\endcsname{#2}%
+    \fi%
+    \JDLvocabularySymbolCS{#1}{#4}%
+    \JDLvocabularyVocabularyCS{#1}{#4}%
+    #5%
+    \JDLvocabularyActivetrue%
+    \fi%
+    % 
+    \ifJDLvocabularyTrack%
+    \ifJDLvocabularyTrackLocal%
+    \colorlet{current}{.}%
+    \color{DarkGreen}%
+    \JDLvocabularyTrackLocalfalse% %% To avoid color spreading
+    #2%
+    \JDLvocabularyTrackLocaltrue%
+    \color{current}%
+    \xspace%
+    \else%
+    #2%
+    \fi%
+    \else%
+    #2%
+    \fi%
+  }%
+}
+
+
+
+
+
+% ;;; Local Variables: ***
+% ;;; eval: (flyspell-mode) ***
+% ;;; eval: (ispell-change-dictionary "american" nil) ***
+% ;;; eval: (flyspell-buffer) ***
+% ;;; End: ***

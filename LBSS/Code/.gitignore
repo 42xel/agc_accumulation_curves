@@ -1,0 +1,4 @@
+depreciated
+__pycache__/
+*.auxiliary
+*anonymous_config.agc

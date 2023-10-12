@@ -1,0 +1,123 @@
+\section{Unary binary tree}
+
+The idea is to build a unary binary tree, with an LBSS machine providing the orders, by stopping on a given terminal node.
+
+\subsection{Primitives}
+\subsubsection{Delay}
+\TODO{txt for illustration}
+Doing nothing during a given amount of time carefully measured with auxiliary bouncing signal.
+
+\begin{figure}[hbt]
+	\centering
+	\small%
+	\SetUnitlength{.14\textwidth}%
+	\includegraphics[height=\unitlength]{ubt_upright_to_Delay_.pdf}%
+	\caption{Delay from a upward right branch.}
+	\label{fig:delay:upright}
+\end{figure}
+
+\begin{figure}[hbt]
+	\centering
+	\small%
+	\SetUnitlength{.14\textwidth}%
+	\includegraphics[height=\unitlength]{ubt_right_to_Delay_.pdf}%
+	\caption{Delay from a rightward branch.}
+	\label{fig:delay:right}
+\end{figure}
+
+
+\subsubsection{split}
+\TODO{txt for illustration}
+The information is duplicated and split into a right and a left branch.
+
+\begin{figure}[hbt]
+	\centering
+	\small%
+	\SetUnitlength{.14\textwidth}%
+	\includegraphics[height=\unitlength]{ubt_right_to_Split_.pdf}%
+	\caption{Split from a rightward branch.}
+	\label{fig:split:right}
+\end{figure}
+
+\begin{figure}[hbt]
+\centering
+\small%
+\SetUnitlength{.14\textwidth}%
+\includegraphics[height=\unitlength]{ubt_upleft_to_Split_.pdf}%
+\caption{Splitting from a upward left branch.}
+\label{fig:split:upleft}
+\end{figure}
+
+
+\subsection{Wiring with LBSS}
+
+There is one LBSS machine coding a class of parameterized functions.
+The initial configuration corresponds to the parameters.
+Two new kinds of states are added:
+
+\begin{itemize}
+	\item \Delay: signals the next tree node has a single child and suspends computation until the next tree node.
+	It has exactly one next state, indicating where to resume computation.
+	\item \Split: signals the next tree node has two children (and it halves the scale) and suspends computation until the next tree node.
+	It has exactly two next states, indicating where to resume computation on each children.
+	In the code, it translates to 2 mandatory labels, corresponding to left and right, in that order.
+\end{itemize}
+
+Example code for a delay:
+\begin{minted}{C}
+	Delay;
+\end{minted}
+
+Example code for a delay with a goto:
+\begin{minted}{C}
+	Delay; goto labelFromDelay
+\end{minted}
+
+Example code for a split:
+\begin{minted}{C}
+	Split labelFromSplitToLeft, labelFromSplitToRight
+\end{minted}
+
+Example code for slanted:
+\begin{minted}[breaklines, linenos]{C}
+left:
+Split left, right;
+right:
+Delay left;
+end;
+machine_ubtTest_rec
+\end{minted}
+This machine will recursively draw a tree where leftward and upward branches are followed by a split and right branches are followed by a delay.
+
+\subsection{AGC Implementation}
+\TODO{fluff up (mscr) and tidy up, cite sfss}
+The tree is organized with Macro Signals: a band of signals bounded by the tree signal, and a bounding signal.
+
+The tree steps are performed with the help of a pair bouncing signals
+They correspond to both bounds of the macro signal.
+The first intersection with bouncing signals starts the macro collision and the second marks the exact position of the Tree Node.
+
+The information about whether the next node is $\Delay$ or $\Split$ is on the tree in an up branch, on the bound otherwise.
+
+
+\begin{figure}[hbt]
+	\centering
+	\small%
+	\SetUnitlength{1.0\textwidth}%
+	\includegraphics[height=\unitlength]{ubt_agc.pdf}%
+	\caption{Delay from a rightward branch.}
+	\label{fig:ubtagc:example1}
+\end{figure}
+
+\subsubsection{Stopping Condition}
+For now, it is assumed that the number of steps by the lbss machine is bounded, with a known upper bound.
+\FRIDGE{(fridge) We assume it always end and we can compute it in finite time.
+If it cannot, it fails (the simulation does not go further).}
+
+If the machine ends on a split or a delay, the information is reported where  it should for the next node.
+If it ends on an ending node, no information is reported and it prompts the stopping of this node.
+Additionally -and optionally, a maximum depth, tracked by the tree meta-signals, is also used to stop the drawing of the tree.
+It works by simply not prompting the computation once the maximum depth is reached, so that no result is reported.
+
+\TODO{rerouting}
+\TODO{lbss incrustration}

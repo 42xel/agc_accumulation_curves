@@ -1,0 +1,39 @@
+//A test file for the Unary binary tree part
+
+// to run:
+// python3 ../../lbss.py test_ubt.lbss agc/
+
+create_lbss_machine > machine_ubtTest_simple << FIN
+	Delay LBLd;
+	LBLd:
+	Split LBLdl, LBLdr;
+	LBLdl:
+	Delay LBLend;
+	LBLdr:
+	Split LBLend, LBLend;
+	LBLend:
+	end;
+FIN
+
+create_lbss_configuration > configuration_ubtTest << FIN
+x = [0]
+FIN
+
+//toAGC_ubt machine_ubtTest_simple configuration_ubtTest ubt.agc
+draw_ubt machine_ubtTest_simple configuration_ubtTest
+
+
+create_lbss_machine > machine_ubtTest_rec << FIN
+	left:
+	Split left, right;
+	right:
+	Delay left;
+	end;
+FIN
+
+
+toAGC_ubt machine_ubtTest_rec configuration_ubtTest ubt_rec.agc ubt_rec.pdf 8 right 150000 1/6
+//TODO: transform line below into explanation of arguments.
+//machine, config, destination, pdfDestination = "lbssagc_out.pdf", ubt_depth = 7, initialNodeID = createID(), scale = Fraction(1,3), nb_steps = 10000
+
+draw_ubt machine_ubtTest_rec configuration_ubtTest 10 right

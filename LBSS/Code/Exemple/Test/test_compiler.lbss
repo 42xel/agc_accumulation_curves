@@ -1,0 +1,73 @@
+// tests for the compilater
+// to run:
+// python3 ../../lbss.py test_compiler.lbss agc/
+
+
+//uncomment parts of the test you want to run
+
+load_lbss_machine machine_move.lbss machine_move
+toAGC_machine machine_move .machine_move.agc
+//
+load_lbss_configuration config_move.lbss config_move
+toAGC_config config_move .config_move.agc
+toAGC_run .machine_move.agc .config_move.agc move.agc test_move.pdf
+
+load_lbss_machine machine_branch.lbss machine_branch
+toAGC_machine machine_branch .machine_branch.agc
+//
+load_lbss_configuration config_branch_pos.lbss config_branch
+toAGC_config config_branch .config_branch_pos.agc
+toAGC_run .machine_branch.agc .config_branch_pos.agc branch_pos.agc test_branch_pos.pdf _#0 4
+//
+load_lbss_configuration config_branch_nul.lbss config_branch
+toAGC_config config_branch .config_branch_nul.agc
+toAGC_run .machine_branch.agc .config_branch_nul.agc branch_nul.agc test_branch_nul.pdf _#0 4
+//
+load_lbss_configuration config_branch_neg.lbss config_branch
+toAGC_config config_branch .config_branch_neg.agc
+toAGC_run .machine_branch.agc .config_branch_neg.agc branch_neg.agc test_branch_neg.pdf _#0 4
+print
+
+load_lbss_machine machine_add_simple.lbss machine_add_simple
+toAGC_machine machine_add_simple .machine_add_simple.agc
+//
+load_lbss_configuration config_add_simple.lbss config_add_simple
+toAGC_config config_add_simple config_add_simple.agc
+toAGC_run .machine_add_simple.agc config_add_simple.agc add_simple.agc add_simple.pdf _#0 3
+
+load_lbss_machine machine_add.lbss machine_add
+toAGC_machine machine_add .machine_add.agc
+//
+load_lbss_configuration config_add.lbss config_add
+toAGC_config config_add config_add.agc
+toAGC_run .machine_add.agc config_add.agc add.agc add.pdf _#0 10
+//
+load_lbss_configuration config_sumsTo0.lbss config_add
+toAGC_config config_add config_sumsTo0.agc
+toAGC_run .machine_add.agc config_sumsTo0.agc sumsTo0.agc sumsTo0.pdf
+print
+
+load_lbss_machine machine_add_neg.lbss machine_add_neg
+toAGC_machine machine_add_neg .machine_add_neg.agc
+//
+load_lbss_configuration config_add.lbss config_add
+toAGC_config config_add config_add.agc
+toAGC_run .machine_add_neg.agc config_add.agc add_neg.agc add_neg.pdf
+print
+
+load_lbss_machine machine_sub.lbss machine_sub
+toAGC_machine machine_sub .machine_sub.agc
+//
+load_lbss_configuration config_sumsTo0.lbss config_sub
+toAGC_config config_sub config_sub.agc
+toAGC_run .machine_sub.agc config_sub.agc sub.agc sub.pdf
+print
+
+load_lbss_machine machine_lastP.lbss machine_lastP
+toAGC_machine machine_lastP .machine_lastP.agc
+//
+load_lbss_configuration config_lastP.lbss config_lastP
+toAGC_config config_lastP config_lastP.agc
+toAGC_run .machine_lastP.agc config_lastP.agc lastP.agc lastP.pdf beginning 25
+print
+

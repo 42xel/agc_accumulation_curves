@@ -1,0 +1,275 @@
+\section{Real Linear Turing Machine}
+\TODO{Officialize rltm}
+
+\subsection{theoretical definition}
+\label{subsec:RLTMdef}
+Much like Turing machine with reading and writing replaced by elementary operations enabling real linear algebra.
+
+A machine is:
+\begin{itemize}
+	\item A bi-infinite tape made of cells, each capable of holding a number (an element of $\RealSet$).
+	The tape is formally an element of $\RealSet^{\RelativeSet}$, $(x_i)_{i\in \RelativeSet}$
+	\item A head pointing at somewhere on the tape.
+	Formally, it's the index of a cell, and it is called $\TapeHead$.
+	\item An accumulator, a number $\AccValue$ in $\RealSet$.
+	This number is used for intermediate computation.
+	\item A finite oriented graph, whose vertices are called the states of the machine.
+	%\item A stack of node, analogous to a call stack. Formally, it is a finite list of nodes.
+\end{itemize}
+
+States (nodes of the graph) can be of the following type:
+
+\begin{itemize}
+	\item computation state,  with a single next state $\NextNode$ and an \emph{elementary computation} $g_\MachineNode$.
+	\item Moving state, with an associated direction, \emph{left} or \emph{right}. It has a single next state $\NextNode$.
+	\item Branching state, with three next states : $\NextNodePlus$, $\NextNodeEqual$ and $\NextNodeMinus$.
+	%\emph A piling state, with two next states: $\NextNode$ and $\NextNodePile$.
+	%\emph{remark:} Not necessary but too useful to pass on (allow to reuse states, %reducing their numbers, and natural implement in AGC).
+	\item Terminal state, with no next state.
+\end{itemize}
+In addition, one state is marked as the starting state.
+
+
+An elementary computation is made of the following:
+\begin{itemize}
+	\item a recipient: the accumulator ($\AccValue$) or the current cell ($\HeadValue$).
+	\item an operation: reset ($=0$), add to ($+=$) or subtract from ($-=$).
+	In case of reset, nothing else is needed.
+	\item a positive multiplicative constant ($ConstantMul *$)
+	\item an operand: the accumulator ($\AccValue$), the current cell ($\HeadValue$) or the unit ($\Unit$).
+	%\emph{remark}: Add 1 as an operand for constant. I don't do it cause $\Tape_0$ can be used to hold 1.
+\end{itemize}
+
+The computation goes as follows: the tape cells and the accumulators are initially set according to an input, defaulting to zero if unspecified.
+Likewise, the head is on the origin, $0$, unless specified otherwise.
+The choice of the starting state may also be given by the input, defaulting to the one state marked as the starting state.
+%Likewise the stack is initially empty unless specified otherwise.
+
+We walk through the graph, starting at the starting state.
+
+At a computation state, we perform the computation and change the value of the recipient accordingly.
+At a moving state, we move the head on the tape according to the direction given.
+In both cases above, we then proceed with the next state, $\NextNode$.
+%
+%At a piling node, $\NextNodePile$ is added to the stack and we proceed to the next node, $\NextNode$.
+
+At a branching state, we go to $\NextNodeMinus$, $\NextNodeEqual$ or $\NextNodePlus$ depending on whether $\AccValue$ is negative, zero or positive respectively.
+
+After visiting a terminal state%
+%, we pop the last element of the stack and continue from there.
+%If the stack is empty,
+the computation ends and the value of the tape, accumulator, and the terminal state we ended on can be used to be interpreted as a result.
+
+\TODO{graph examples}
+
+\subsection{code}
+
+This subsection details a practical language for users to create machines described in the previous section.
+
+This language is denoted by the extension \extensionRLTM.
+It ought to enable three things:
+
+\begin{itemize}
+	\item defining a machine.
+	\item specifying an input, through the tape, accumulator value, etc.
+	\item running the machine on a given input
+\end{itemize}
+
+In addition, it will be able to be exported into an agc file that simulate the machine or encodes an input.
+
+%\begin{minted}{console}
+%python3 <path_py/>lbss.py <path_lbss/>test.lbss <path_agc/>
+%\end{minted}
+%
+%\TODO{how it is done and examples}
+
+While the theoretical model allows to manipulate real numbers, for a code, we can only write the numbers we can write.
+For practicality, I choose to limit myself to rational numbers.
+They are written numerator slash positive denominator or just as integers if possible.
+%Technically, they are parsed as Fraction as in python3 fractions modules, which does give more leeway.
+%However, it is done in two different ways depending on whether on machine or initial configuration, so I'm not too comfortable putting it that way; maybe something to work on -on the .py as well.
+For example, "\mintinline{C}{22/7}"
+%\begin{minted}{C}
+%22/7
+%\end{minted}
+
+Rational numbers might not always be the most efficient thing to manipulate, but they do enable exact computation.
+
+\subsubsection{Shell Command}
+To run an lbss file, enter the following command.
+\begin{minted}{shell}
+python3 <lbss.py_path>/lbss.py my_lbss_file.lbss <agc_files_path>
+\end{minted}
+In that command \mintinline{shell}{<lbss.py_path>} is the location of the \mintinline{shell}{lbss.py} file, the main file of the lbss compiler/interpreter (relative to where the command is executed).
+\mintinline{shell}{<agc_files_path>} is the path where the generated agc files ought to go (relative to where the command is executed).
+It is optional, and when absent, the generated agc files, if any, will be put in the same folder as your lbss files.
+
+\subsubsection{Initializing the tape and the machine}
+To create a machine, the keyword \functionCreateRLTMmachine is used, followed by two less-than signs and the name of the machine to create.
+The definition of the machine follows and a line containing nothing but the name of the machine denotes the end of  that definition.
+
+
+To create an initial configuration, the keyword \functionCreateRLTMconfiguration is used, followed by two less-than signs and the name of the configuration to create.
+The definition of the configuration follows and a line containing nothing but the name of the configuration denotes the end of  that definition.
+The definition is done in python, in an environment where \mintinline{python}{x} is the tape, a bi-infinite list whose cells default to 0.
+
+\begin{minted}[linenos]{C}
+create_lbss_configuration << example_configuration
+x[-1] = Fraction(-4, 3)
+x[0] = '3/5'
+x[1] = -7
+example_configuration
+\end{minted}
+The values are interpreted as fraction, as taken from the fractions module, hence the quotes around \mintinline{C}{'3/5'}, without them, conversion to float would mess things up.
+\TODO{nice info to have around, probably not as detailed for an article, so just a reminder to abridge when I get to it}
+
+\subsubsection{coding a machine}
+
+To create a machine, the keyword \functionCreateRLTMmachine followed by two less-than signs and the name of the machine to create is used.
+The definition of the machine follows and a line containing nothing but the name of the machine denotes the end of  that definition.
+
+For example:
+\begin{minted}{C}
+create_lbss_machine << simplistic_example
+	end;
+simplistic_example
+\end{minted}
+
+Creates a machine named "simplistic\_example", whose definition spans over a single line, that I'm about to explain.
+Each state roughly corresponds to one line of code.
+Precisely, a semi colon '\mintinline{C}{;}' denotes the end of the definition of a single state (and nothing else).
+A terminal state is written simply:
+\begin{minted}{C}
+	end;
+\end{minted}
+
+
+Left and right states are denoted with lesser-than and greater-than symbols respectively:
+\begin{minted}{C}
+	>;
+	<;
+	end;
+\end{minted}
+is the definition of a machine that goes one right, one left, and stops.
+
+
+The accumulator and the tape cell where the head is currently at are denoted \mintinline{C}{a} and \mintinline{C}{h} respectively, 
+whereas \mintinline{C}{u} stands for unit, and is worth 1.
+The reset, add and subtract operations are denoted \mintinline{C}{=0} (or \mintinline{C}{= 0}), \mintinline{C}{+=} and \mintinline{C}{-=} respectively.
+A computation state is simply encoded by the succession of recipient, operation, and when relevant, a constant factor, a star '\mintinline{C}{*}' (denoting the product) and an operand.
+The constant is positive and mandatory, even if it \mintinline{C}{1}.
+For example:
+\begin{minted}[linenos]{C}
+a = 0;
+a += 1 * h;
+a += 2 * a;
+a += 1/2 * u;
+end;
+\end{minted}
+Sets the value of the accumulator to $3 \HeadValue + 1/2$ - in order, it sets it to $\HeadValue$, adds twice itself to itself then adds half a unit.
+
+See also swap.lbss
+
+Labels are used for branching.
+A label is defined by writing a sequence of alphanumerical characters followed by a colon '\mintinline{C}{:}', and points at the next defined state.
+The following example denotes a label
+\begin{minted}{C}
+	LabelX:
+\end{minted}
+
+See also Euclide.lbss
+
+Branch states are denoted "\mintinline{C}{Branch}", followed by three comma separated label, corresponding to the three next states $\NextNodeMinus$, $\NextNodeEqual$ or $\NextNodePlus$.
+Example:
+\begin{minted}[linenos]{C}
+a = 0;
+a += h;
+Branch LabelNegative, LabelZero, LabelPositive;
+LabelNegative:
+end;
+LabelZero:
+end;
+LabelPositive:
+end;
+\end{minted}
+The above code defines a machine that ends at different states depending on the sign of the value hold in the cell it initially points at.
+
+By default the next state of a computation or move state is the next defined state.
+Labels are also used, along with gotos allow to alter that behavior.
+Example:
+
+\begin{minted}{C}
+	h =0; goto labelEnd
+\end{minted}
+\TODO{add a more fledge example}
+
+See also slanted.lbss
+
+\subsubsection{Running a machine}
+Running a machine is done via the function \mintinline{C}{run}
+This function has 3 mandatory arguments: the machine, the input tape, and the name of the run.
+\begin{minted}{C}
+run machine_swap configuration_swap run_swap
+\end{minted}
+
+Additionally, it has 3 optional arguments, the maximum number of steps, the initial node and the initial value of the accumulator, that are to be added in order.
+\begin{minted}{C}
+run machine_move configuration_move run_move -1 _#0 45
+\end{minted}
+The default value for the maximum number of steps is $-1$, and signifies infinity.
+
+The initial node can be given as a label, or as a \emph{node identifier} \mintinline{C}{labelName_<number>}; it defaults  to \mintinline{C}{_#0}  which is the identifier of the first node of the code, provided it does not start with a label.
+
+The default value for the accumulator is $0$.
+
+\subsubsection{Running a unary binary tree drawing}
+The following function is used to draw a unary binary tree from an lbss machine, according to the Delay and Split nodes it stops by.
+\begin{minted}{C}
+draw_ubt machine_name configuration_name 10 initialNode
+\end{minted}
+The machine and configuration are mandatory, other arguments are optional, to be given in order.
+The third argument is the maximum depth, which defaults to 7.
+The last argument is the initial node, which again can be given as a label or node identifier ad defaults to \mintinline{C}{_#0}.
+
+
+\subsubsection{Exporting to agc}
+The keywords \functionToAGCmachine, \functionToAGCconfig and \functionToAGCrun are used to generate .agc files of the corresponding objects.
+Typically, machines and configurations generated by \functionToAGCmachine and \functionToAGCconfig respectively will be used by the run file generated by \functionToAGCrun.
+That latter file is typically the one you want to run the agc software on, and generates a pdf time space diagram of the machine run.
+
+To compile a machine into an agc file, use:
+\begin{minted}{C}
+toAGC_machine machine_swap machine_swap.agc
+\end{minted}
+
+To compile a configuration, use:
+\begin{minted}{C}
+toAGC_config configuration_swap configuration_swap.agc 3
+\end{minted}
+The last argument is the initial value of the accumulator, here $3$.
+It is optional and defaults to 0.
+
+To compile a run, use:
+\begin{minted}[breaklines]{C}
+toAGC_run machine_swap.agc configuration_swap.agc test_machine_swap.agc test_machine_swap.pdf _#0 1/6 1000
+\end{minted}
+\begin{itemize}
+	\item The machine and configuration can either be given as agc filenames, or directly as machine and configuration names.
+	Caution though, machine and configuration will still be compiled, without a name of their own.
+	Don't cut corners more than once per agc folder.
+	\TODO{improve/change compiler behavior and reflect}
+	\item The name of the pdf is optional and defaults to \mintinline{C}{"lbssagc_out.pdf"}.
+	\item The next optional argument is the initial node, which defaults to \mintinline{C}{_#0}.
+	\item The next argument is the scale, which relates to the thickness of the signal's drawing and defaults to $1/3$.
+	\item The last arguments is the maximum number of steps to run the agc machine;
+	it is the number of signal collision and is only loosely related to the number of steps of the lbss machine simulated (one lbss steps is simulated with a couple tens agc steps, give or take).
+\end{itemize}
+
+The result is a file that can be run with agc software to generate a pdf.
+In the previous example, the command to run the agc would be:
+\begin{minted}{shell}
+java -jar agc_2_0.jar <agc_path>/test_machine_swap.agc
+\end{minted}
+It's important to note that agc files ought to be run from the same place they were generated.
+%or as the lbss files used to generate them were? TODO check.
+%The reason is essentially to avoid path substraction. The AGC files need to point at the agc library, whose path is inferred from the .py files path, upon running the lbss files.

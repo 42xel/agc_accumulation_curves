@@ -1,0 +1,259 @@
+\section{Technical part about AGC implementation}
+
+\TODO {define simulate}
+
+An lbss\_agc machine is a machine that simulates an \RLTM machine.
+What simulate means is detailed in the first subsection.
+
+\subsection{primitives in agc}
+The parts of the machines and initial configurations that are common to all lbss\_agc machines.
+
+\subsubsection{The tape and the accumulator}
+
+As shown in \RefFig{fig:initialConfiguration:singleRegister}, a value is encoded as the (oriented) distance of a value signal from a zero signal.
+The zero signal is pain blue, while the value signal is densely dashed.
+The value is bounded by two signals, one red and one green, for overflow detection.
+For now, nothing is done if the value gets too big.
+Such a complex of up to 4 signals is called a \emph{register}.
+\begin{figure}[hbt]
+	\centering
+	\small%
+	\SetUnitlength{.14\textwidth}%
+	\includegraphics[height=\unitlength]{initialConf_singleCell_noAccu.pdf}%
+	\caption{A single cell.}
+	\label{fig:initialConfiguration:singleRegister}
+\end{figure}
+
+\TODO{CR and MS definition tables}
+
+Each cell has a black marker, at the left of its value, to help the head movement.
+Each cell has room to host the computing head, which comprises a program signal, a constant register and the accumulator.
+
+\RefFigure{fig:initialConfiguration:singleCellWithAccu} shows a cell with the head pointed on it, but without program signal.
+The rightmost register stores the cell value, as previously.
+The middle register is the accumulator.
+The leftmost register lacking a left bound holds the constant value 1.
+
+\begin{figure}[hbt]
+	\centering
+	\small%
+	\SetUnitlength{.14\textwidth}%
+	\includegraphics[height=\unitlength]{initialConf_singleCell.pdf}%
+	\caption{A cell where the head points.}
+	\label{fig:initialConfiguration:singleCellWithAccu}
+\end{figure}
+
+
+\RefFigure{fig:initialConfiguration:tape} shows a tape with 3 cells.
+\RefFigure{fig:initialConfiguration:tape:noAccu} shows it without head, whereas \RefFigure{fig:initialConfiguration:tape:withAccu} shows it with a head pointing on the middle cell.
+
+\FRIDGE{If a number gets too big, they are all scaled down.
+	With a spacing between cell proportional to the biggest multiplicative constant of the program and to the space between bounds, one can ensure that an operation on bounded values does not spill on other values.
+	
+	Unlike tape and accumulator initialization, initial configuration also depend on the machine.
+	No big deal because 
+	firstly it could be made independent (scaling down stuffs once at the beginning) and 
+	secondly, it is not the main obstacle to universality (see section \ref{sec:universality}).
+}
+
+\begin{figure}[hbt]
+	\centering
+	\small%
+	\SetUnitlength{.05\textwidth}%
+	\subcaptionbox{no head%
+	\label{fig:initialConfiguration:tape:noAccu}}{%
+	\includegraphics[height=\unitlength]{initialConf_3cells_noAccu.pdf}%
+	}
+	\SetUnitlength{.045\textwidth}%
+	\subcaptionbox{a head points on the middle cell%
+	\label{fig:initialConfiguration:tape:withAccu}}{%
+	\includegraphics[height=\unitlength]{initialConf_tape.pdf}%
+	}
+	\caption{A tape with 3 cells.}
+	\label{fig:initialConfiguration:tape}
+\end{figure}
+
+For now the tape is finite.
+\FRIDGE{
+The tape is finite and expansion to simulate an infinite tape is handled by the moving head.
+}
+
+\subsubsection{the Head}
+
+The head is composed of a program signal, then (to its right) the constant register and the accumulator.
+Further right is the cell value, which isn't part of the head per se, but can obviously be interacted with.
+Unless specified otherwise, there is one meta-signal per machine state for the program signal to keep track of the state.
+
+During the execution of the program, a signal will go back and forth between the data (constant, accumulator and current cell) and the program signal.
+
+Going from the program signal to the data, that signal is called a go signal.
+%It can only be of one meta-signal, $\goMS$.
+
+Going from the data to the program signal, that signal is called a return signal.
+It can be of several type, most notably when returning from a branch test.
+
+\TODO{reference subsection}
+For the rest of this subsection, we ignore the program signal part and focus on what primitive operations happen between two program states.
+Each primitive will thus be started by a go signal (right after it interacted with the program) and will end with a return signal (right before it interact with the program)
+
+%||, >>, <<, <<+, <<=, <<-, <<0, prgX
+
+\subsubsection{the moving head}
+Moving is handled by parallelograms and using the markers, as shown by \RefFig{fig:move:right}
+
+\begin{figure}[hbt]
+	\centering
+	\small%
+	\SetUnitlength{.17\textwidth}%
+	\includegraphics[height=\unitlength]{move_right.pdf}%
+	\caption{Moving the head one cell to the right.}
+	\label{fig:move:right}
+\end{figure}
+
+\FRIDGE{
+At each end of the tape, the last cell has a special marker and there is an other special marker where the empty markers of the next cell would be.
+They are used to create a new cell upon reaching the last one.
+}
+
+\subsubsection{reset}
+Resetting is done simply with a go a return signal that cuts the value signal to reset and marks the zero signal as value, as shown in \RefFig{fig:reset}.
+\begin{figure}[hbt]
+	\centering
+	\small%
+	\SetUnitlength{.25\textwidth}%
+	\includegraphics[height=\unitlength]{reset_cell.pdf}%
+	\caption{Resetting the cell value to 0.}
+	\label{fig:reset}
+\end{figure}
+
+\subsubsection{reading data}
+Add and subtract states are cut in two elementary phase, corresponding to three program meta-signals.
+
+The first phase, called get, reads a positive constant times a register and and holds the value in a temporary form called \emph{temporary register}. This temporary register consists in 2 parallel signals of different type, one corresponding to "zero", the other to "value". The value is encoded by the vertical space between them. The sign is encoded by their relative position, zero above value being positive. The sole purpose of this register is to be added or subtracted to a register according to the basic lbss command that prompted the get.
+
+For example, in:
+\begin{minted}{C}
+a += 1/2 * h;
+\end{minted}
+if we refer to the temporal register via the variable '\mintinline{C}{t}' the get action corresponds to
+\begin{minted}{C}
+t <- 1/2 * h;
+\end{minted}
+and the second phase corresponds to
+\begin{minted}{C}
+a <- a + t;
+\end{minted}
+
+In \RefFigure{fig:get:accu} shows how a register value (here the accumulator's) is read into the temporary register. The difference between \RefFigure{fig:get:accu:1} and \RefFigure{fig:get:accu:7:2} shows that by changing some speeds, a value can be multiplied before being read.
+
+\begin{figure}[hbt]
+	\centering
+	\small%
+	\SetUnitlength{.15\textwidth}%
+	\subcaptionbox{getting the accumulator value%
+		\label{fig:get:accu:1}}{%
+		\includegraphics[height=\unitlength]{get_accu_times1.pdf}%
+	}
+	\SetUnitlength{.21\textwidth}%
+	\subcaptionbox{getting the accumulator value multiplied by $3.5$%
+		\label{fig:get:accu:7:2}}{%
+		\includegraphics[height=\unitlength]{get_accu_times7:2.pdf}%
+	}
+	\caption{Get, with different multiplicative constant.}
+	\label{fig:get:accu}
+\end{figure}
+
+
+\subsubsection{Addition and Subtraction}
+\TODO{more readable.}
+The transition from get to addition/subtraction is later covered in subsection \ref{subsec:Compiling}.
+It's still worth mentioning here that we assume the temporary register holds a positive value, and switch operations if necessary.
+
+Assuming the temporary register holds a value to add to the accumulator, it is done as shown by \RefFig{fig:add:accu:45:4}
+\begin{figure}[hbt]
+	\centering
+	\small%
+	\SetUnitlength{.17\textwidth}%
+	\includegraphics[height=\unitlength]{add_accu45:4.pdf}%
+	\caption{Adding 45/4 to the accumulator.}
+	\label{fig:add:accu:45:4}
+\end{figure}
+
+Assuming the temporary register holds a value to subtract from the cell, it is done as shown by \RefFig{fig:add:sub:cell}
+\begin{figure}[hbt]
+	\centering
+	\small%
+	\SetUnitlength{.25\textwidth}%
+	\includegraphics[height=\unitlength]{sub_cell.pdf}%
+	\caption{subtracting from the cell.}
+	\label{fig:sub:cell}
+\end{figure}
+
+\subsubsection{branch}
+
+Branching is done as in \RefFigure{fig:branch:neg}: a signal goes and probes whether the value, the zero, or both (as a superposition) is encountered first.
+The type of the return signal thus depends on the sign of the accumulator, and is used as later shown in subsection \ref{subsec:Compiling}.
+\TODO{define MS and use them}
+\begin{figure}[hbt]
+	\centering
+	\small%
+	\SetUnitlength{.14\textwidth}%
+	\includegraphics[height=\unitlength]{branch_negative.pdf}%
+	\caption{Branching.}
+	\label{fig:branch:neg}
+\end{figure}
+
+
+\FRIDGE{
+\subsubsection{FRIDGE boundaries}
+If the tape becomes too big, scale everything down.
+
+If the computation takes too much time, scale everything down.
+
+Both in a way to have remain under a known time constraint (it's not enough that it's finite, there needs to be a bound and we need to know it).
+}
+
+\subsection{Compiling RLTMmachine into agc\RLTM machine}
+\label{subsec:Compiling}
+The meta-signal ids of the states are 
+$L\#n$
+where $L$ is the last label if any, and $n$ is the number of states since that last label, or since the beginning of the code (everything happen as if there is an empty string label at the beginning of each code).
+These meta-signals have speed $0$.
+Even though these IDs are unique, faulty but sensible ID referencing is corrected on the fly, producing a warning, and allowing dubious practice such as:
+\begin{itemize}
+	\item Double labeling.
+	\item Labeling the beginning of the code and not explicitly giving the starting label.
+	\item omitting terminal nodes.
+\end{itemize}
+
+Once a non computation state is read (up to the semi colon), we know its id and its nature.
+The upper half of a program collision is then set to the program meta-signal itself, and the corresponding instruction meta-signal.
+
+Then reading the label(s) explicitly or implicitly referred to (goto, next line, branch...), we can infer the corresponding ids of the next state(s).
+The program collision is then set as follows: the lower half is the program meta-signal of the instruction that were just ran and a return meta-signal, the upper half is those of whichever state comes next, if any, which may or may not depend on the return signal.
+
+Computation instructions are treated somewhat differently in two regards.
+Firstly, syntax such as 
+\begin{minted}{C}
+a = -4;
+\end{minted}
+is allowed, even though it does not corresponds to a computation state as described in subsection \ref{subsec:RLTMdef}.
+The first step is thus to break down \RLTM instruction into basic RLTM states.
+In our example, that would be a state $a = 0$ followed by a state $a -= 4 * u$.
+
+Secondly, non reset computation state are broken into three consecutive program meta-signals:
+\begin{itemize}
+	\item a get meta-signal.
+	\item an auxiliary get meta-signal, which prompts the operation add or sub according to the signs of the constant, the sign value read with the first return signal and the operation desired.
+	\item a final meta-signal which bounces the upper part of the temporary register, and links to the next machine state.
+\end{itemize}
+
+Other than being three, these program meta-signals are treated like non computation ones, as described earlier.
+Some suffixes are used for their IDs so as to keep the correspondence between number of states and ID number, the $n$ in $L\#n$.
+There can be discrepancies between that number of states and the number of instructions (ending with a semi colon) due to how some computation nodes can be written as a single \RLTM instruction but are broken into several states.
+
+
+\subsection{inputs into configuration}
+Straightforward.
+
+The computation is started by having the upper part of a program collision corresponding to the starting state.

@@ -1,0 +1,98 @@
+//examplifies the basic nodes and the exportations
+
+//Swap : (x_0, x_1) = (a,b) -> (x_0, x_1) = (b,a)
+//the above comment is a condensed way to state: the lbss machine has to operate a swap of a pair of numbers, that pair being represented by (x_0,x_1), for both the input and the output.
+
+create_lbss_machine << machine_swap
+//to create an lbss machine
+	a =0;		//reset the accumulator (not necessary, implicitely assumed, but good practice)
+	a += 1 * h;	//stores the first value in the accumulator
+	<;		//move left
+	h += 1 * a;	//copy the first value it in x_-1
+	>;
+	>;
+	//move twice right
+	a =0;		//reset the accumulator.
+	a += 1 * h;	//store the second value in the accumulator
+	//the 3 basic operations are reset, add to, and substract from. Set is done in two steps, reset and add.
+	<;
+	h =0;
+	h += 1 * a;
+	//write the second value in x_0
+	<;
+	a =0;
+	a += 1 * h;
+	//stores the first value in the accumulator
+	h =0;
+	//clear x_-1
+	>;
+	>;
+	h =0;
+	h += 1 * a;
+	//write the first value in x_1
+	<;
+	a =0;
+	//to have a "clean" final state.
+	end;
+	//final node.
+machine_swap
+
+create_lbss_machine << machine_swap2
+//A variant where the swap is done in place, the smarty pants way. More efficient in theory (LBSS or agc model, don't need to go all the way looking for room to store the stuff to swap) not necessarrilly in practice (when simulated on an actual computer)
+	a =0;
+	a -= 1 * h;
+	>;
+	a += 1 * h;
+	h -= 1 * a;
+	<;
+	h += 1 * a;
+	a =0;
+	end;
+//Remark, the spacing "a =0;" is aggravating, but not enforced.
+//I chose it in this file to emphase the underlying information: "reset a" rather than "set a to0".
+machine_swap2
+
+create_lbss_configuration << configuration_swap
+//to fill the tape before running the machine
+x[0] = '3/5'
+x[1] = -7
+
+//Unspecified fields are set to zero
+configuration_swap
+//print configuration_swap
+
+//I'm not thrilled to do the same work twice, but I assume a way to test the lbsss code before converting it to an agc machine would make sense.
+run machine_swap configuration_swap 32
+//runs the lbss machine for 32 steps and output and prints a log of it.
+//Replace 32 by -1 to let the machine run until it ends.
+
+run machine_swap2 configuration_swap run 32
+//print run
+
+toAGC_machine machine_swap machine_swap.agc
+//creates an agc file where a signal machine called lbss_agc_machine_swap is defined and simulates machine_swap.
+
+
+create_lbss_configuration << configuration_swap
+//to fill the tape before running the machine
+x[-1] = 0
+x[0] = '3/5'
+x[1] = -7
+//Unspecified fields are set to zero
+configuration_swap
+
+toAGC_config configuration_swap configuration_swap.agc 3
+//creates an agc file where a function called function_create_conf_configuration_swap is defined.
+//Applied to an lbss_agc machine, it creates an initial configuration of it.
+
+toAGC_run machine_swap.agc configuration_swap.agc test_machine_swap.agc test_machine_swap.pdf _#0
+//Creates a .agc which defines the machine and the configuration, ready to run.
+
+print test_machine_swap.agc
+
+//toAGC_run machine_swap configuration_swap test_machine_swap2.agc
+//the machine and configuration can be provided as already compiled or not
+
+//Nothing more is necessary. Going straight from lbss to pdf would be nice, but can be achieve without a dedicated function, through an agc file and a makefile.
+//TODO show how it can be done.
+

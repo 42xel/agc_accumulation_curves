@@ -1,0 +1,280 @@
+%% Vocabulary + meta-signal declaration and drawing for agc
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ProvidesPackage{h_agc}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{xspace}
+\RequirePackage{amsmath} %% pour \text
+\RequirePackage{amssymb}
+\RequirePackage{pifont} %% pour \ding & co
+
+\RequirePackage{h_color}
+\RequirePackage{h_vocabulary}  %% should be loaded before using package to work correctly
+
+
+\DeclareOption{MSinTablesymbol}{\AGCMSinTableOfSymbolstrue}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% TABLE OF SYMBOLS
+%% To (de)activate the automatic insertion of meta-signal in the table of symbols
+%% Default: not intos
+%% Option: 
+\newif\ifAGCMSinTableOfSymbols
+\AGCMSinTableOfSymbolsfalse
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\ProcessOptions
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% MATH: typo
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \providecommand{\JDLvocabularyMathXspace}[1]{\ensuremath{#1}\xspace}
+% \providecommand{\mathBBxspace}[1]{\JDLvocabularyMathXspace{\mathbb{#1}}}
+% \providecommand{\mathCalxspace}[1]{\JDLvocabularyMathXspace{\mathcal{#1}}}
+
+% \providecommand{\JDLvocabularyMathBBXspace}[1]{\JDLvocabularyMathXspace{\mathbb{#1}}}
+% \providecommand{\JDLvocabularyMathCalXspace}[1]{\JDLvocabularyMathXspace{\mathcal{#1}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ADD arrow over name
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% needs \usetikzlibrary{arrows}
+
+\newcommand{\AGCOverLine}[2]{%       
+  \mbox{%
+    \begin{tikzpicture}[baseline=0]%
+      \draw (0,0) node[anchor=base,inner sep=0,outer sep=0,line width=0cm] (tmp) {#1} ;
+      \draw[solid,#2] ([shift={(0ex,.25ex)}]tmp.north west) -- ([shift={(0ex,.25ex)}]tmp.north east) ;%
+    \end{tikzpicture}%
+  }%
+}                                
+
+\newcommand{\AGCLeftWard}[1]{\AGCOverLine{\,#1}{<-}}
+\newcommand{\AGCRightWard}[1]{\AGCOverLine{#1\,}{->}}
+%% NEEDS for next 2
+% \usetikzlibrary{arrows}
+\newcommand{\AGCLeftWardSlow}[1]{\AGCOverLine{#1}{right to-}}  
+\newcommand{\AGCRightWardSlow}[1]{\AGCOverLine{#1}{-left to}}
+\newcommand{\AGCLeftRightWard}[1]{\AGCOverLine{#1}{<-left to}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% SIGNAL MACHINES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\JDLvocabulary{\AGCmachine}{\JDLvocabularyMathCalXspace{A}}{}{Signal machine}
+%\JDLvocabulary{\AGCmachineOther}{\JDLvocabularyMathCalXspace{B}}{}{Signal machine, other}
+
+\JDLvocabulary{\AGCmetaSignalSet}{\JDLvocabularyMathXspace{M}}{}{Signal machine meta-signal set}
+% \JDLvocabulary{\AGCmetaSignalNbr}{\JDLvocabularyMathXspace{n}}{}{Signal machine number of Meta-signals}
+\JDLvocabulary{\AGCmetaSignal}{\JDLvocabularyMathXspace{\mu}}{}{Some meta-signal}
+\JDLvocabulary{\AGCmetaSignalOther}{\JDLvocabularyMathXspace{\nu}}{}{Some other meta-signal}
+
+\JDLvocabulary{\AGCspeed}{\JDLvocabularyMathXspace{s}}{}{Speed (usually comes with a subscript like $\AGCspeed_1$}
+\JDLvocabulary{\AGCspeedFun}{\JDLvocabularyMathXspace{S}}{}{Signal machine speed function}
+%\JDLvocabulary{\AGCspeedNbr}{\JDLvocabularyMathXspace{\mathfrak{n}}}{}{Number of speeds of a signal machine}
+\providecommand{\AGCspeedMax}[1][]{\JDLvocabularyMathXspace{\AGCspeedFun_{max}^{#1}}}
+\providecommand{\AGCspeedMin}[1][]{\JDLvocabularyMathXspace{\AGCspeedFun_{min}^{#1}}}
+
+
+%% RULES
+\JDLvocabulary{\AGCruleSet}{\JDLvocabularyMathXspace{R}}{}{Set of rules of a signal machine}
+\JDLvocabulary{\AGCrule}{\JDLvocabularyMathXspace{\rho}}{}{Some rule of a signal machine}
+\JDLvocabulary{\AGCrulePrime}{\JDLvocabularyMathXspace{\rho'}}{}{Some other rule of a signal machine}
+\JDLvocabulary{\AGCruleIn}{\JDLvocabularyMathXspace{\AGCrule^{{-}}}}{}{Incoming meta-signals of a rule}
+\JDLvocabulary{\AGCrulePrimeIn}{\JDLvocabularyMathXspace{{\AGCrulePrime}{}^{{-}}}}{}{Incoming meta-signals of another rule}
+\JDLvocabulary{\AGCruleOut}{\JDLvocabularyMathXspace{\AGCrule^{{+}}}}{}{Outgoing meta-signals of a rule}
+\JDLvocabulary{\AGCruleOutPrime}{\JDLvocabularyMathXspace{{\AGCrulePrime}{}^{{+}}}}{}{Outgoing meta-signals of another rule}
+
+\providecommand{\AGCruleDefBraceLess}[2]{\JDLvocabularyMathXspace{{#1}\rightarrow\text{#2}}}
+\providecommand{\AGCruleDef}[2]{\AGCruleDefBraceLess{\{\text{#1}\}}{\{\text{#2}\}}}
+\providecommand{\AGCruleDefArray}[2]{\JDLvocabularyMathXspace{\,\{\text{#1}\,\}}&\JDLvocabularyMathXspace{\{\,\text{#2}\,\}}}
+\newenvironment{TabularRule}{%
+  \begin{tabular}{r@{ $\to$ }l}%    
+    }{%
+  \end{tabular}%
+}
+
+%% extended values
+\JDLvocabulary{\AGCextendedValueSet}{\JDLvocabularyMathXspace{V}}{}{AGC set of extended values}
+% \JDLvocabulary{\AGCextendedValueSing}{\text{\ding{100}}\xspace}{}{Singularity (AGC spc value)}
+\JDLvocabulary{\AGCextendedValueAcc}{\text{\ding{90}}\xspace}{}{Accumulation (AGC spc value)}
+\JDLvocabulary{\AGCextendedValueVoid}{\JDLvocabularyMathXspace{\oslash}}{}{Void (AGC spc value)}
+
+
+%% Configuration
+\JDLvocabulary{\AGCconfigurationSymbol}{\ensuremath{c}}{}{Configuration of some signal machine}
+\providecommand{\AGCconfiguration}[1][]{\JDLvocabularyMathXspace{\AGCconfigurationSymbol_{#1}}}{}{}
+\providecommand{\AGCconfigurationOther}[1][]{\JDLvocabularyMathXspace{\AGCconfigurationSymbol'_{#1}}}{}{}
+% \JDLvocabulary{\AGCconfigurationSupport}{\JDLvocabularyMathXspace{supp}}{}{Support of a configuration (the non-\texttt{AGCextendedValueVoid} part)}
+\JDLvocabulary{\AGCconfigurationSetSymbol}{\ensuremath{\mathcal{C}}}{}{The set of configurations of some signal machine}
+\providecommand{\AGCconfigurationSet}[1][]{\JDLvocabularyMathXspace{\AGCconfigurationSetSymbol_{#1}}}{}{}
+
+\DeclareMathOperator{\AGCpositionAtOperator}{@}
+\JDLvocabulary{\AGCpositionAt}{\JDLvocabularyMathXspace{\AGCpositionAtOperator}}{}{Operator to position a signal in a configuration}
+\newcommand{\AGCsigAt}[2]{\JDLvocabularyMathXspace{{#1}\AGCpositionAt{#2}}} % initial configuration: signal #1 @ position #2
+
+%\JDLvocabulary{\AGCspacialPosition}{\JDLvocabularyMathXspace{x}}{}{Some spatial position}
+%\JDLvocabulary{\AGCspacialPositionOther}{\JDLvocabularyMathXspace{x'}}{}{Some spatial position}
+
+%\JDLvocabulary{\AGCtemporalPosition}{\JDLvocabularyMathXspace{t}}{}{Some temporal position}
+%\JDLvocabulary{\AGCtemporalPositionOther}{\JDLvocabularyMathXspace{t'}}{}{Some temporal position}
+
+%% space-time diagrams
+\JDLvocabulary{\AGCspaceTimeDiagram}{\JDLvocabularyMathBBXspace{D}}{}{Space-time diagram}
+\JDLvocabulary{\AGCspaceTimeDiagramOther}{\JDLvocabularyMathBBXspace{D'}}{}{Space-time diagram, another one}
+\JDLvocabulary{\AGCspaceTimeDiagramSM}{\JDLvocabularyMathBBXspace{A}}{}{Space-time diagram for machine \AGCmachine}
+%\JDLvocabulary{\AGCspaceTimeDiagramSMother}{\JDLvocabularyMathBBXspace{B}}{}{Space-time diagram for machine \AGCmachineOther}
+
+
+\JDLvocabulary{\AGClightCone}{\JDLvocabularyMathXspace{J}}{}{Light cone}
+% \JDLvocabulary{\AGCforwardLightCone}{\JDLvocabularyMathXspace{\AGClightCone^}}}{}{Forward light cone}
+\JDLvocabulary{\AGCbackwardLightCone}{\JDLvocabularyMathXspace{\AGClightCone^-}}{}{Backward light cone}
+% \providecommand{\AGClightCone}[2]{\JDLvocabularyMathXspace{\AGClightCone(x#1,t#2)}}{}{}
+% \providecommand{\AGClightCone}[2]{\JDLvocabularyMathXspace{\AGClightCone(x#1,t#2)}}{}{}
+% \providecommand{\AGClightCone}[2]{\JDLvocabularyMathXspace{\AGClightCone(x#1,t#2)}}{}{}
+% \providecommand{\AGClightCone}[2]{\JDLvocabularyMathXspace{\AGClightCone(x#1,t#2)}}{}{}
+
+%% Signal
+\providecommand{\AGCsigPolice}[1]{\text{\EnlargeHeight{\sf #1}}\xspace}
+\JDLvocabulary{\AGCsignal}{\AGCsigPolice{s}}{}{Some signal from a space-time diagram of some machine}
+% \JDLvocabulary{\AGCsignalOther}{\AGCsigPolice{s'}}{}{Some other signal from a space-time diagram of some machine}
+
+%% Collision
+\JDLvocabulary{\AGCcollision}{\JDLvocabularyMathXspace{\kappa}}{}{Collision}
+% \JDLvocabulary{\AGCatOrOut}{\JDLvocabularyMathXspace{\ltimes}}{}{Meta-signal present or outgoing from a collision/rule}
+% \JDLvocabulary{\AGCatOrIn}{\JDLvocabularyMathXspace{\rtimes}}{}{Meta-signal present or in-coming in a collision/rule}
+
+
+% \JDLvocabulary{\AGCmetaSignalAcc}{\JDLvocabularyMathXspace{\mu_{\AGCextendedValueAcc}}}{}{Meta-signal issued from an accumulation}
+\JDLvocabulary{\AGCtimeToNextCollision}{\JDLvocabularyMathXspace{\Delta}}{}{Time to next collision}
+% \providecommand{\AGCcasualPast}[2]{\JDLvocabularyMathXspace{I^-(x#1,t#2)}}{}{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Signals -- graphics
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \PSAGCmakeSignal [ pstrick style complement  ]{ cmd base }{ Name }{ color } 
+% example \PSAGCmakeSignal{Scale}{sca}{purple}
+\newcommand{\PSAGCmakeSignal}[4][]{%
+  \psset{labelsep=.5mm}
+  \expandafter\gdef\csname Sig#2\endcsname{\AGCsigPolice{#3}}
+  \newpsobject{PSSig#2}{pcline}{linecolor=#4#1}
+  \newpsobject{PSpolySig#2}{psline}{linecolor=#4#1}
+  \expandafter\def\csname PSSig#2Laba\endcsname(##1)(##2){\csname PSSig#2\endcsname(##1)(##2)\aput{:U}{\csname Sig#2\endcsname}}
+  \expandafter\def\csname PSSig#2Labb\endcsname(##1)(##2){\csname PSSig#2\endcsname(##1)(##2)\bput{:U}{\csname Sig#2\endcsname}}
+  \expandafter\def\csname PSSig#2LabA\endcsname(##1)(##2){\csname PSSig#2\endcsname(##1)(##2)\Aput{\csname Sig#2\endcsname}}
+  \expandafter\def\csname PSSig#2LabB\endcsname(##1)(##2){\csname PSSig#2\endcsname(##1)(##2)\Bput{\csname Sig#2\endcsname}}
+}
+
+
+\newcommand{\EnlargeHeight}[1]{\raisebox{0em}[\height+.05em][\depth+.05em]{#1}}
+
+
+% \tikzAGCmakeSignal [ tikz style complement ]{ cmd base }{ Name }{ color & style } 
+% example \tikzAGCmakeSignal{Scale}{sca}{purple,dotted}
+\newcommand{\tikzAGCmakeSignal}[4][]{%
+  %% To define the name/label of the meta-signal in the various tables of symbols
+  \ifAGCMSinTableOfSymbols
+  \JDLvocabularyCS{Sig#2}{\AGCsigPolice{#3}}{}{Meta-signal \expandafter\string\csname Sig#2\endcsname}
+  \else
+  \expandafter\newcommand\csname Sig#2\endcsname{\AGCsigPolice{#3}}
+  \fi
+  %% edef et noexpand insures all #1 and #4 are fully extended before draw is called
+  %% just provide the \draw
+  \expandafter\edef\csname drawSig#2\endcsname{%
+    \noexpand\draw[#1,#4] }%
+  %% Most general form
+  \expandafter\edef\csname DrawSig#2ParParLeg\endcsname[##1](##2)(##3)[##4]##5{%
+    % ##1 -> extra line parameter 
+    % ##2 -> origin
+    % ##3 -> endpoint
+    % ##4 -> extra legend parameter
+    % ##5 -> legend
+    \noexpand\draw[#1,#4,##1] (##2) -- node[black,##4]{##5} (##3) ; }%
+  % 
+  %% Specialisations -- gross
+  \expandafter\def\csname DrawSig#2Lparam\endcsname(##1)(##2)[##3]{%
+    \csname DrawSig#2ParParLeg\endcsname[](##1)(##2)[##3]{\csname Sig#2\endcsname}}%
+  %% 
+  \expandafter\edef\csname DrawSig#2param\endcsname(##1)(##2)[##3]##4{%
+    \noexpand\draw[#1,#4] (##1) -- node[black,##3]{##4} (##2) ; }%
+  %% Specialisations -- fine
+  \expandafter\edef\csname DrawSig#2\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1) -- (##2);}%
+  \expandafter\edef\csname DrawSig#2LLeft\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1) -- node[black,left=-.2em]{\noexpand\csname Sig#2\noexpand\endcsname} (##2);}%
+  \expandafter\edef\csname DrawSig#2LULeft\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1) -- node[black,sloped,left=-.2em]{\noexpand\csname Sig#2\noexpand\endcsname} (##2);}%
+  \expandafter\edef\csname DrawSig#2LUAboveLeft\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1) -- node[pos=0,black,sloped,above right]{\noexpand\csname Sig#2\noexpand\endcsname} (##2);}%
+  \expandafter\edef\csname DrawSig#2LUAboveRightParam\endcsname[##1](##2)(##3){%
+    \noexpand\draw[#1,#4] (##2) -- node[pos=1,black,sloped,above left,##1]{\noexpand\csname Sig#2\noexpand\endcsname} (##3);}%
+  \expandafter\edef\csname DrawSig#2LUAboveRight\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1) -- node[pos=1,black,sloped,above left]{\noexpand\csname Sig#2\noexpand\endcsname} (##2);}%
+  \expandafter\edef\csname DrawSig#2LUBelowLeft\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1) -- node[pos=0,black,sloped,below right]{\noexpand\csname Sig#2\noexpand\endcsname} (##2);}%
+  \expandafter\edef\csname DrawSig#2LUBelowRight\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1) -- node[pos=1,black,sloped,below left]{\noexpand\csname Sig#2\noexpand\endcsname} (##2);}%
+  \expandafter\edef\csname DrawSig#2LRight\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1) -- node[black,right=-.2em]{\noexpand\csname Sig#2\noexpand\endcsname} (##2);}%
+  \expandafter\edef\csname DrawSig#2LURight\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1) -- node[black,sloped,right=-.2em]{\noexpand\csname Sig#2\noexpand\endcsname} (##2);}%
+  \expandafter\edef\csname DrawSig#2LAbove\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1)  --node[black,above=-.2em]{\noexpand\csname Sig#2\noexpand\endcsname} (##2);}%
+  \expandafter\edef\csname DrawSig#2LBelow\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1) -- node[black,below=-.2em]{\noexpand\csname Sig#2\noexpand\endcsname} (##2);}%
+  \expandafter\edef\csname DrawSig#2LUAbove\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1) -- node[black,sloped,above=-.2em]{\noexpand\csname Sig#2\noexpand\endcsname} (##2) ; }%
+  \expandafter\edef\csname DrawSig#2LUAboveParam\endcsname[##1](##2)(##3){%
+    \noexpand\draw[#1,#4] (##2) -- node[black,sloped,above=-.2em,##1]{\noexpand\csname Sig#2\noexpand\endcsname} (##3) ; }%
+  \expandafter\edef\csname DrawSig#2LUBelow\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1) -- node[black,sloped,below=-.2em]{\noexpand\csname Sig#2\noexpand\endcsname} (##2) ; }%
+  \expandafter\edef\csname DrawSig#2LUBelowParam\endcsname[##1](##2)(##3){%
+    \noexpand\draw[#1,#4] (##2) -- node[black,sloped,below=-.2em,##1]{\noexpand\csname Sig#2\noexpand\endcsname} (##3) ; }%
+  \expandafter\edef\csname DrawSig#2UAbove\endcsname(##1)(##2)##3{%
+    \noexpand\draw[#1,#4] (##1) -- node[black,sloped,above=-.2em]{##3} (##2) ; }%
+  \expandafter\edef\csname DrawSig#2UBelow\endcsname(##1)(##2)##3{%
+    \noexpand\draw[#1,#4] (##1) -- node[black,sloped,below=-.2em]{##3} (##2) ; }%
+%  \expandafter\edef\csname DrawSig#2Lparam\endcsname(##1)(##2)[##3]{%
+%    \noexpand\draw[#1,#4] (##1) -- node[black,##3]{\noexpand\csname Sig#2\noexpand\endcsname} (##2) ; }%
+%  \expandafter\edef\csname DrawSig#2param\endcsname(##1)(##2)[##3]##4{%
+%    \noexpand\draw[#1,#4] (##1) -- node[black,##3]{##4} (##2) ; }%
+  \expandafter\edef\csname DrawSig#2LOver\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1) -- (##2) node[black,sloped,above=-.2em]{\noexpand\csname Sig#2\noexpand\endcsname} ; }%
+  \expandafter\edef\csname DrawSig#2LUnder\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1) node[black,sloped,below=-.2em]{\noexpand\csname Sig#2\noexpand\endcsname}  -- (##2); }%
+  %% label on middle
+  \expandafter\edef\csname DrawSig#2Lmid\endcsname(##1)(##2){%
+    \noexpand\draw[#1,#4] (##1) -- node[black]{\noexpand\csname Sig#2\noexpand\endcsname} (##2) ; }%
+  %% 
+  %% OBSOLETE in the future
+  %% To define the name/label of the meta-signal ensuring a minimal heiht
+ % \expandafter\def\csname Sig#2rule\endcsname{\AGCsigPolice{\rule{0em}{1em}#3}}%
+ % \expandafter\edef\csname DrawSig#2LAboveU\endcsname(##1)(##2){%
+ %   \noexpand\draw[#1,#4] (##1) -- node[black,sloped,above=-.2em]{\noexpand\csname Sig#2\noexpand\endcsname} (##2) ; }%
+ % \expandafter\edef\csname DrawSig#2LBelowU\endcsname(##1)(##2){%
+ %   \noexpand\draw[#1,#4] (##1) -- node[black,sloped,below=-.2em]{\noexpand\csname Sig#2\noexpand\endcsname} (##2) ; }%
+ % \expandafter\edef\csname DrawSig#2BelowU\endcsname(##1)(##2)##3{%
+ %   \noexpand\draw[#1,#4] (##1) -- node[black,sloped,below=-.2em]{##3} (##2) ; }%
+ % \expandafter\edef\csname DrawSig#2AboveU\endcsname(##1)(##2)##3{%
+ %   \noexpand\draw[#1,#4] (##1) -- node[black,sloped,above=-.2em]{##3} (##2) ; }%
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% ;;; Local Variables: ***
+% ;;; eval: (flyspell-mode) ***
+% ;;; eval: (ispell-change-dictionary "british") ***
+% ;;; eval: (flyspell-buffer) ***
+% ;;; End: ***
+

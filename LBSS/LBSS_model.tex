@@ -1,0 +1,124 @@
+
+\documentclass[12pt,a4paper]{article}
+
+%\usepackage{xspace}	%
+
+\usepackage{amsmath}%% For \text
+\usepackage{amssymb}  %% For various symbols and \mathbb
+
+\usepackage{tikz}  %% for all graphics
+
+\usepackage{minted}%% Display Python code
+
+
+\usepackage{graphicx}
+\graphicspath{{./Pictures/}}
+\DeclareGraphicsExtensions{.jpeg,.jpg,.eps,.pdf}
+
+
+\usepackage{subcaption}
+
+\usepackage{tabularx}% For tabular
+
+%\usepackage{enumitem}%% For spaces in liste, item… 
+
+%\usepackage{subcaption} %%subcatption, subcaption box
+
+%\renewcommand{\listingscaption}{Algorithm}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% These are JDL personnal packages
+\usepackage{h_vocabulary} % For a correct use of Vocabulary, var definition…
+% \usepackage[track]{h_vocabulary} % For a correct use of Vocabulary, var definition… make them appear in color
+
+\usepackage{h_graphics} % for SetUnitlength and such
+\usepackage{h_agc} % Some definitions are commands
+% \usepackage[MSinTablesymbol]{h_agc} % Some definitions are commands Sig names appear in table of symbols
+
+
+\usepackage{Add} %% Local .sty
+
+\input{Newcommand} %% Local newcommand
+
+\input{Vocabulary} %% Local vocabulary
+
+
+\begin{document}
+
+
+\input{titleAbstract}
+
+\input{Intro}
+
+\input{State_of_the_Art}
+
+\input{LBSS_definition}
+
+\input{AGC_technical}
+
+\input{Unary_Binary_Tree}
+
+\input{Universality}
+
+%TODO rewrite, move or remove.
+%\section{Technical Compiler and Interpreter part (Python)}
+%
+%\emph{Language:}
+%Python.
+%
+%Simple to use, I don't really need more.
+%
+%Other candidates were Ruby and Lua, for rational expression.
+%Ruby I don't know.
+%Lua I love, but for this purpose, the difference with python is lesser popularity and no structure other than tables.
+%
+%String processing library-ies?
+%RE
+%
+%\subsection{main program}
+%Goal: identify what file has to be loaded, what string has to be read...
+%Then what to interpret, what to compile and how.
+%
+%Presumably, it will be pattern search (<<< should allow to avoid good parenthesis, but is not an issue if needed).
+%
+%The lists of whats to identify:
+%\begin{itemize}
+%	\item machine definition (file or string). A python object (dico?) has to be built.
+%	\item configuration definition (file or string). A python object (dico) has to be built.
+%	\item interpreting a machine. Has to be done in python (feed relevant dico to a function)
+%	\item compiling something. python object to feed to a function that writes in an agc file
+%\end{itemize}
+%
+%\subsection{initial configuration loader}
+%The string is interpreted as python code, and ought to define either a list (the tape)
+%or a dictionary with a field "tape" (a list of numbers), a field "accumulator" (the initial accumulator value) and a field "initial\_state" (a string), all optional.
+%
+%The loader transforms it into a dic with all fields filled, to be used by the interpreter or the loader.
+%
+%\subsection{interpreter}
+%graphic library or full text (console/ log file)?
+%Full text.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\small
+ \bibliographystyle{alpha}
+% \bibliographystyle{plainnat-letters}
+% \bibliographystyle{plainnat}%unsrtnat
+% \bibliographystyle{abbrvnat}%unsrtnat
+%\bibliographystyle{splncs03}%unsrtnat
+
+
+\bibliography{bib_jdl,bib_paper}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\clearpage
+
+\appendix
+
+
+\end{document}

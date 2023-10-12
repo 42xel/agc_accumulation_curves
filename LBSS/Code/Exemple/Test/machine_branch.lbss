@@ -1,0 +1,13 @@
+a = h;
+Branch labelLesserThan0, labelEQual0, labelGreaterThan0;
+labelLesserThan0:
+a = 0;
+<;
+end;
+labelEQual0:
+a = 0;
+end;
+labelGreaterThan0:
+a = 0;
+>;
+end;

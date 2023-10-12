@@ -1,0 +1,129 @@
+//A ubt draw of a parabola
+//for i in -1 .. 1
+//x[i] is f(i)
+//x[2] is homgeneous to an acceleration. It is computed from other parameters at the start, so no need to fill it with anything meaningfull(but the space is needed for now that the tape isn't extendable yet)
+
+Init:
+//computing pseudo acceleration
+	<;
+	a = h;
+	>;
+	a -= 2 * h;
+	>;
+	a += h;
+	>;
+	h = a * 1/4;
+	a = 0;
+	<<;	goto Test
+
+Left:
+//computing pseudo acceleration
+	<;
+	a = h;
+	>;
+	a -= 2 * h;
+	>;
+	a += h;
+	>;
+	h = a * 1/4;
+	a = 0;
+	<<;
+
+//p1 = 2 p0
+	a = 2 * h;
+	>;
+	h = a;
+
+//p0 = pm1 + p0 - 2*a
+//pm1 = 2 * pm1
+	>;
+	a = -2 * h;
+	<<<;
+	a += h;
+	h += h;
+	>;
+	h += a;
+
+	a =0;	goto Up
+
+Right:
+//computing pseudo acceleration
+	<;
+	a = h;
+	>;
+	a -= 2 * h;
+	>;
+	a += h;
+	>;
+	h = a * 1/4;
+	a = 0;
+	<<;
+
+//pm1 = 2 p0
+	a = 2 * h;
+	<;
+	h = a;
+
+//p0 = p1 + p0 - 2*a
+//p1 = 2 * p1
+	>>>;
+	a = -2 * h;
+	<;
+	a += h;
+	h += h;
+	<;
+	h += a;
+
+	a =0;	goto Up
+
+Up:
+	<;
+	h -= 1;
+	>;
+	h -= 1;
+	>;
+	h -= 1;
+	<;	goto Test
+
+Test:
+	>>;
+	a = h;
+	<;
+	Branch Test_a_nonpos, Test_a_nonpos, Test_a_pos;
+	
+	Test_a_pos:
+		a = -1 * h;
+		<<;
+		a += h;
+		Branch Test_a_pos1, Test_a_pos2, Test_a_pos2;
+		Test_a_pos1:
+			a -= h; goto Test_a_pos3
+		Test_a_pos2:
+			a = -1 * h; goto Test_a_pos3
+	Test_a_pos3:
+		>;
+		a += 2 * h; goto Test_final
+
+	Test_a_nonpos:
+		a = h;
+		<<;
+		a -= h;
+		Branch Test_a_nonpos1, Test_a_nonpos2, Test_a_nonpos2;
+		Test_a_nonpos1:
+			a += h; 
+			>; goto Test_final
+		Test_a_nonpos2:
+			a = h;
+			>; goto Test_final
+
+	Test_final:
+		a -= 2;
+		Branch LSplit, LDelay, LDelay;
+
+LDelay:
+	Delay Up;
+
+LSplit:
+	Split Left, Right;
+
+end;

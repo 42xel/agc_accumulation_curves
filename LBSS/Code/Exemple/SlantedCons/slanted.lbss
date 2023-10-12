@@ -1,0 +1,24 @@
+//examplifies load, toAGC and toUBT
+//usage
+/*
+python3 ../../lbss.py SlantedMain.lbss ./agc/
+*/
+
+load_lbss_machine SlantedMachine.lbss SlantedMachine
+
+create_lbss_configuration << configuration_slanted
+//to fill the tape before running the machine
+x[0] = 1
+x[1] = "3/2"
+x[2] = "7/3"
+configuration_slanted
+
+
+toAGC_run SlantedMachine configuration_slanted lbss_slanted.agc lbss_slanted.pdf
+
+toAGC_ubt SlantedMachine configuration_slanted slanted.agc slanted.pdf 10 Init 1/6 2000000
+
+//run SlantedMachine configuration_slanted run_name -1
+//print run_name
+draw_ubt SlantedMachine configuration_slanted 10
+

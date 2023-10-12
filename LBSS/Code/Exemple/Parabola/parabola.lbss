@@ -1,0 +1,32 @@
+//examplifies load, toAGC and toUBT
+//usage
+/*
+python3 ../../lbss.py SlantedMain.lbss ./agc/
+*/
+
+load_lbss_machine ParabolaMachine.lbss mach
+
+create_lbss_configuration > conf << FIN
+//to fill the tape before running the machine
+x[-2] = 0
+x[-1] = 5/3
+x[0] = 5/4
+x[1] = 5/2
+x[2] = 0
+FIN
+
+
+toAGC_run mach conf parabolaRun.agc parabolaRun.pdf
+
+toAGC_ubt mach conf parabola.agc parabola.pdf 8 Init 1000000
+
+
+run mach conf run_name// Init -1
+print run_name
+/*
+run mach conf run_name -1 Left
+print run_name
+*/
+
+draw_ubt mach conf 7
+

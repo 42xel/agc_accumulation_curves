@@ -1,0 +1,175 @@
+%% To remove unwanted
+\providecommand{\OFF}[1]{}
+
+%% To indicate that it should be filled
+\providecommand{\FillMe}{\textsf{\textbf{\color{DarkRed}$<$FILL ME$>$}}\xspace}
+
+\newcommand{\MyMarginPar}[1]{%
+  \ifinner{
+
+    \centerline{
+      \begin{minipage}{0.8\linewidth}
+        \small%
+        #1%
+      \end{minipage}
+    }%
+    
+  }\else{%
+    \marginpar{\small\footnotesize%
+      #1%
+    }%
+  }\fi%
+}
+
+\newcommand{\SubmissionOnly}[1]{%
+  \hspace{0pt}\MyMarginPar{\footnotesize%
+    #1%
+  }%
+}
+
+\newcommand{\TODO}[1]{%
+  \MyMarginPar{\sf\color{red}{#1}}%
+}
+
+
+%% allowing more floats
+\setcounter{topnumber}{7}
+\setcounter{bottomnumber}{7}
+\setcounter{totalnumber}{7}
+\renewcommand{\topfraction}{1}
+\renewcommand{\bottomfraction}{1}
+\renewcommand{\textfraction}{0}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% For a vertically narrow itemize
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\newlength{\THEparindent}
+\THEparindent\parindent
+\newenvironment{itemizeCompact}{%
+  \begingroup%
+  \leftmargini\THEparindent%
+  \leftmarginii\THEparindent%
+  \leftmarginiii\THEparindent%
+  \leftmarginiv\THEparindent%
+  \begin{list}{--}{%
+      \itemsep 0cm%
+      \topsep  0cm%
+      \partopsep 0cm%
+      \parsep 0cm%
+      %\leftmargin0\parindent
+    }%
+  }{%
+  \end{list}%
+  \endgroup%
+}
+
+\newenvironment{Description}{%
+  \begingroup%
+  \leftmargini\THEparindent%
+  \leftmarginii\THEparindent%
+  \leftmarginiii\THEparindent%
+  \leftmarginiv\THEparindent%
+  % \begin{list}{--}{%
+  \begin{description}
+    \leftmargini\THEparindent%
+    \itemsep 0cm%
+    \topsep  0cm%
+    \partopsep 0cm%
+    \parsep 0cm%
+  }{%
+  \end{description}%
+  \endgroup%
+}
+
+
+
+\newenvironment{Enumerate}{%
+  \begingroup%
+  \leftmargini\THEparindent%
+  \leftmarginii\THEparindent%
+  \leftmarginiii\THEparindent%
+  \leftmarginiv\THEparindent%
+  \begin{enumerate}[nolistsep,noitemsep]
+  }{%
+  \end{enumerate}%
+  \endgroup%
+}
+
+
+
+\newenvironment{tightcenter}{%
+  \setlength\topsep{0pt}
+  \setlength\parskip{0pt}
+  \begin{center}
+}{%
+  \end{center}
+}
+
+\newenvironment{Align}{%
+  \begin{tightcenter}
+    \begin{math}
+      \displaystyle
+      \begin{array}{rl}
+        }{%
+      \end{array}
+    \end{math}
+  \end{tightcenter}
+}
+
+
+
+\newenvironment{Eqnarray}{%
+  \begin{tightcenter}
+    \begin{math}
+      \displaystyle
+      \begin{array}{rcl}
+        }{%
+      \end{array}
+    \end{math} 
+  \end{tightcenter}
+}
+
+
+
+
+
+\newcommand{\SUBSUBSECTION}[1]{
+
+  % \NVS
+
+  % \clearpage
+  
+  \subsubsection{#1}
+
+  % \NTVS
+
+}
+
+\newcommand{\SUBSECTION}[1]{
+
+  % \NVS
+
+  % \clearpage
+  
+  \subsection{#1}
+
+  % \NTVS
+
+}
+
+\newcommand{\SECTION}[1]{
+
+  % \NVS
+
+  % \clearpage
+  
+  \section{#1}
+
+  % \NTVS
+
+}
+
+

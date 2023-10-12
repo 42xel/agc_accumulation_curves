@@ -1,0 +1,58 @@
+//examplifies the basic of labels, nodes linking and branching.
+//uses shortcuts and updated syntax
+//usage
+/*
+python3 ../../lbss.py Euclide2.lbss ./agc/
+*/
+
+create_lbss_machine > machine_euclide <<FIN
+//créer une machine à signaux de nom "machine_euclide"
+//sa définition commence ci-après et se termine à la ligne contenant "FIN"
+//cette machine calcul le plus grand commun diviseur entre x_0 et x_1, et met le résultat dans x_0
+	beginning:	//déclaration d'un label
+	a = h;
+	>;
+	labelTest:
+	Branch labelSwap, labelEnd, labelNext;
+	//Branche : continue en labelSwap, labelEnd, labelNext selon que a<0, a=0 ou a<y respectivement
+	labelNext:
+	a -= h; goto labelTest
+	//un goto.
+	labelSwap:
+	a += h;
+	h -= a;
+	a += h;
+	<;
+	h = a;
+	a=0; goto beginning
+	labelEnd:
+	a += h;
+	h = 0;
+	<;
+	h = a;
+	a = 0;
+	end;
+FIN
+
+create_lbss_configuration > configuration_euclide <<FIN
+//créer une configuration
+x = [33/5, 24/7]
+FIN
+
+toAGC_machine machine_euclide machine_euclide.agc
+//compile la machine en une machine agc
+
+toAGC_run machine_euclide.agc configuration_euclide run_euclide.agc run_euclide.pdf beginning 0 -1 0 1/10
+//créer un fichier agc correspondant au calcul de la machine en partantd'une configuration initiale,
+//Les paramètres optionels à partir de "beginning" sont, dans l'ordre:
+//le noeud initial
+//un facteur d'échelle en temps
+//une limite au nombre de calculs
+//un facteur d'échelle en espace
+
+run machine_euclide configuration_euclide run beginning 100
+//créer un run python
+
+print run
+
+

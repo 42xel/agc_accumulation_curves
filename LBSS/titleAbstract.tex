@@ -1,0 +1,77 @@
+% Todo, understand the following comments and alter them to suit me
+
+%% Elsevier article
+% \begin{frontmatter}
+% %   Title, authors and addresses
+% %   use the thanksref command within \title, \author or \address for footnotes;
+% %   use the corauthref command within \author for corresponding author footnotes;
+% %   use the ead command for the email address,
+% %   and the form \ead[url] for the home page:
+% %   \title{Title\thanksref{label1}}
+% %   \thanks[label1]{}
+% %   \author{Name\corauthref{cor1}\thanksref{label2}}
+% %   \ead{email address}
+% %   \ead[url]{home page}
+% %   \author{J{\'e}r{\^o}me \textsc{Durand-Lose}\thanksref{label1}}%\corauthref{cor1}\thanksref{label2}}
+% %   \ead{jerome.durand-lose@univ-orleans.fr}
+% %   \ead[url]{http\string://www.univ-orleans.fr/lifo/Members/Jerome.Durand-Lose}
+% %   \corauth[cor1]{}
+% %   \address{Address\thanksref{label3}}
+% %   \thanks[label3]{}
+% %   use optional labels to link authors explicitly to addresses:
+% %   \author[label1,label2]{}
+% %   \address[label1]{}
+% %   \address[label2]{}
+%   \begin{abstract}
+% %     Text of abstract
+%   \end{abstract}
+%   \begin{keyword}
+% %     keywords here, in the form: keyword \sep keyword
+% %     PACS codes here, in the form: \PACS code \sep code
+%   \end{keyword}
+% \end{frontmatter}
+
+
+\title{}
+\author{%J{\'e}r{\^o}me \textsc{Durand-Lose}\thanks{%
+		%    \texttt{http\string://www.univ-orleans.fr/lifo/Members/Jerome.Durand-Lose},
+%		\texttt{jerome.durand-lose@univ-orleans.fr}}
+%	\and  %
+Aurélien \textsc{Emmanuel}
+}
+
+\date{\today{} (or version number)}
+
+
+
+\maketitle
+
+\begin{center}
+	\small Université d'Orléans, INSA Centre Val de Loire,
+	LIFO EA 4022,
+	\\
+	FR-45067 Orléans, France  
+\end{center}
+
+
+\begin{abstract}
+	\parindent .75cm
+	\TODO{write abstract}
+\end{abstract}
+
+{\renewcommand{\abstractname}{Key-Words}%
+	
+	\begin{abstract}
+		\TODO{finish kwords}
+		Abstract Geometrical Computation~;
+		Cellular Automata~;
+		Fractal~;
+		Signal Machines.
+	\end{abstract}%  
+}
+
+% ;;; Local Variables: ***
+% ;;; eval: (flyspell-mode) ***
+% ;;; eval: (ispell-change-dictionary "british" nil) ***
+% ;;; eval: (flyspell-buffer) ***
+% ;;; End: ***

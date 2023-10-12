@@ -1,0 +1,77 @@
+\section{State of the Art}
+\subsection{BSS}
+
+The "traditional" BSS model and small variants, as described by Blum, Shub and Smale in \cite{blum1989}.
+
+\subsubsection{basic}
+
+\begin{itemize}
+	\item $\mathcal{I}$: input space, typically $\mathbb{R}^n$
+	\item $\mathcal{O}$: output space, typically $\mathbb{R}^n$
+	\item $\mathcal{S}$: computation space, typically $\mathbb{R}^n$
+	\item a finite oriented graph (corresponding to states of a Turing machine or lines of a program)
+\end{itemize}
+
+The graph has four types of nodes. Nodes are designed by the letter $\MachineNode$:
+
+\begin{itemize}
+	\item A single starting node, called input node, written $1$.
+	It has a single next node $\gamma_1$ and no antecedent and has an associated map $ I : \mathcal{I} \mapsto \mathcal{S}$
+	\item Computation nodes, with a single next node $\gamma_{\MachineNode}$ and the associated computational map, $g_{\MachineNode} \mathcal{S} \mapsto \mathcal{S}: $, polynomial/rational depending.
+	\item Branching node, with a non zero polynomial branching function $h_{\MachineNode} : \mathcal{S} \mapsto \mathcal{R}$, and two next nodes : $\gamma^+_{\MachineNode}$ and $\gamma^-_{\MachineNode}$.
+	\item Output node, with no next node and an associated map $ O_{\MachineNode} : \mathcal{S} \mapsto \mathcal{O}$
+\end{itemize}
+
+The computation is as expected: we are given an input $i\in\mathcal{I}$, the first node instructs us how to inject it in $\mathcal{S}$, giving us a value $x$, and we proceed to the next node.
+A computation node instructs us to update $x$ : $x := g_{\MachineNode}(x)$, and proceed to the next node.
+A branching node tells us to go to the node $\gamma^-_{\MachineNode}$ if $h_{\MachineNode}(x) < 0$ and to $\gamma^+_{\MachineNode}$ otherwise.
+An output nodes tells us to stop and let us know how to interpret the result.
+
+
+\emph{Remark:} The graph approach is slightly different from an instruction flow with line numbers in that a node can have more than one non branching antecedent.
+The graph approach seems more natural for signal machine as well: nodes are canonically handled with meta signals, and transition with collision rules.
+
+\subsubsection{Infinite dimension}
+Input, computation and output space may be of infinite dimension.
+Polynomial/rational functions are defined in such a way they only act upon a finite number of dimensions.
+A fifth kind of node allows to copy the $i$-th component into the $j$-th.
+$i$ and $j$ are integrated into the computation space so as to be modified by computation nodes, with limitation so that they stay integer.
+
+\subsubsection{\LBSS}
+Linear BSS is the same as BSS, but with linear functions/map instead of rational/polynomial.
+
+\subsection{Linear $\mathbb{R}$ - URM}
+Linear $\mathbb{R}$ - URM was first introduced by Durand Lose in \cite{durand-lose07cie}.
+It is equivalent to \LBSS, but simpler to simulate.
+From a user perspective, it has pros, like more powerful addressing, and cons like very atomic computation (at least one line of code per elementary operation).
+
+\begin{itemize}
+	\item $(A_i)_{i\in I}$ addresses, $I$ finite constant.
+	\item $(R_j)_{j\in J}$ registers, $J$ finite extendable.
+	\item $(R_(i))_{i\in I}$ way to address the registers indirectly.
+	\item $X$ accumulator.
+\end{itemize}
+
+instructions: 
+\begin{itemize}
+	\item addressing $\text{inc}A_i$, $\text{dec}A_i$, if $0<A_i \text{ goto } n$ for the registers.
+	\item $\text{load} R_{i}$, $\text{store} R_{i}$, $\text{add} R_{i}$
+	\item $\text{mul}\ConstantMul$
+	\item if $0<X$ goto $n$ for the registers.
+\end{itemize}
+
+%\subsection{Linear $\mathbb{R}$ - LRM}
+%Same as above, but with a finite number of registers. Easiest to simulate, but a priori not equivalent, so addressing must stay in the back of my mind even if I forego them for now.
+%
+%\begin{itemize}
+%	\item $(R_j)_{j\in J}$ registers, $J$ finite constant.
+%	\item $X$ accumulator.
+%\end{itemize}
+%
+%instructions: 
+%\begin{itemize}
+%	\item addressing $\text{inc}A_i$, $\text{dec}A_i$, if $0<A_i \text{ goto } n$ for the registers.
+%	\item $\text{load} R_{i}$, $\text{store} R_{i}$, $\text{add} R_{i}$
+%	\item $\text{mul}\ConstantMul$
+%	\item if $0<X$ goto $n$ for the registers.
+%\end{itemize}

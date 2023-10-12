@@ -1,0 +1,59 @@
+//tests for the interpreter
+//to run:
+//python3 ../../lbss.py test_interpreter.lbss
+//uncomment parts of the test you want to run
+
+/*
+load_lbss_machine machine_move.lbss machine_move
+create_lbss_configuration << configuration
+//to fill the tape before running the machine
+x[-1] = 0
+x[0] = ONE * 7/5	//one way to circumvent float to fraction conversion issue
+x[1] = "-16/7"		//another way to circumvent float to fraction conversion issue
+configuration
+print configuration
+run machine_move configuration run1
+print run1
+print
+
+run machine_move configuration run2 4/7 lbl 1
+//accu initial_node maxsteps
+print run2
+print
+*/
+/*
+load_lbss_machine machine_branch.lbss machine_branch
+load_lbss_configuration config_branch_pos.lbss config_branch
+run machine_branch config_branch run
+print run
+//load_lbss_machine machine_branch.lbss machine_branch
+load_lbss_configuration config_branch_nul.lbss config_branch
+run machine_branch config_branch run
+print run
+//load_lbss_machine machine_branch.lbss machine_branch
+load_lbss_configuration config_branch_neg.lbss config_branch
+run machine_branch config_branch run
+print run
+*/
+/*
+load_lbss_machine machine_add.lbss machine_add
+load_lbss_configuration config_add.lbss config_add
+run machine_add config_add run
+print run
+//load_lbss_machine machine_add.lbss machine_add
+load_lbss_configuration config_sumsTo0.lbss config_add
+run machine_add config_add run
+print run
+print
+*/
+/*
+load_lbss_machine machine_sub.lbss machine_sub
+load_lbss_configuration config_sumsTo0.lbss config_sub
+run machine_sub config_sub run
+print run
+*/
+load_lbss_machine machine_lastP.lbss machine_lastP
+load_lbss_configuration config_lastP.lbss config_lastP
+run machine_lastP config_lastP run
+print run
+

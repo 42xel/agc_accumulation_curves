@@ -1,0 +1,48 @@
+Clear and concise definition of regular BSS, to keep in mind:
+
+https://en.wikipedia.org/wiki/Blum%E2%80%93Shub%E2%80%93Smale_machine
+
+L in our lbss stands for linear
+
+
+limited LBSS (implementation):
+- *finite* number of registers
+- *bounded* registers
+- linear operations
+- reading and writing heads movement
+?one single dual purpose head or one read and one write? a priori one read and one write; shouldn't matter for limited registers anyway.
+- test and conditional branching ("if x_i>0 goto #n")
+- *bounded* running time
+
+Unless specified, we suppose or theoretically check that the algo we use are nicely behaving with respect to these limitations. ie. no effort is made to have the implementation check or handle the limitation.
+
+LBSS (fridge, theory, implementation only if necessary):
+- unbounded number of registers (still countable)
+- arbitrary (real/rational numbers) registers
+- linear operations
+- reading and writing heads movement
+- test and conditional branching ("if x_i>0 goto #n")
+- finite running time
+
+
+
+
+
+Implementation:
+
+?A signal machine for all LBSS or one per program?
+One per program: most likely easier, and universal simulation shows that in theory, not too hard to make one for all.
+
+- one signal machine for things in common within all LBSS program
+- an agc library to generate a SM corresponding to a program
+- ?something? to compile ?"lbss code"? directly into a SM, without knowing anything about agc
+- Something, likely and agc library, to generate diagram from lbss code
+
+
+
+Theory:
+
+- Accumulate on is "simply" accumulation set = function graph (not so simple when trying to accumulate on discontinuous function), but would also be good to:
+- define convergence/ convergence speed, or at least relate to other attempt at defining function convergence in a CScience setting.
+- start with constant functions. Previous results on computationality and on single point accumulations reusable.
+- find a function that can be defined mathematically but can't be accumulated on

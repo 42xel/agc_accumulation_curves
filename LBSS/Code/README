@@ -1,0 +1,32 @@
+Readme for the lbss interpreter and wanna be lbss agc compiler
+
+description:
+A collection of files to interpret Linear Blum Shub Smale Machine (sorts of Turing machine with linear reading and writing abilities) and their runs, as writen in an ad hoc language, as well as to compile it into agc files to simulate such machine with Signal Machines.
+
+usage:
+python3 <path_py/>lbss.py <path_lbss/>test.lbss <path_agc/>
+
+(concrete examples exist in /examples subdirectory, which has it's own README)
+
+Where:
+- path_py is the path of the lbss.py file (relative to where the command is launched)
+- path_lbss is the path of the lbss file to execute
+- path agc is optional, and defaults to path_lbss. It is the path where agc files get outputted, if any, and where they output their PDF as well.
+
+The Folder this README files finds it self in should contain:
+- this very file (README)
+
+py files:
+- lbss.py			the main python file. A .lbss interpreter/agc compiler
+- lbssIO.py			the file analysing path_py, path_lbss and path_agc
+- lbssMachine.py		the module for machine interpreter
+- lbssConfiguration.py		the module for configurations interpreter
+- lbssRun.py			the module for the run interpreter
+- lbssFileref.py		Classes for filenames within the interpreter environment
+- lbssAGCMachine.py		the module for machine compiler
+- lbssAGCConfiguration.py	the module for configurations compiler
+- lbssAGCRun.py			the module for the run compiler
+
+Subdirectories:
+- examples			contain examples files
+- lib_agc			contains agc files necessary for the agc compiler part

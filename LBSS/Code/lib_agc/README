@@ -1,0 +1,19 @@
+README for the agc part of the library
+
+description:
+Common agc files all generated agc file refer to.
+
+usage:
+Not intended as a stand alone library, but the /test subdirectory does provide digest insight on the present specific part of the lbss compiler.
+Otherwise, go back in ../Code/README.
+
+The Folder this README files finds it self in should contain:
+- this very file (README)
+
+agc files:
+- arith.agc			contains common operations and functions of general use, for speed manipulation and configuration creation
+- lib_lbss_sm.agc		All the signal machines the compiler generate ought to share a lot in common. lib_lbss_sm.agc is precisely that common lot.
+
+
+Subdirectories:
+- test				contains a battery of tests

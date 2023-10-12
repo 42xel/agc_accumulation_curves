@@ -1,0 +1,98 @@
+%%
+%% Définition de couleurs 
+%% et invocation de packages fournissant cette possibilité
+%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ProvidesPackage{h_color}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% newrgbcolor => package pstricks
+%% definecolor => package color & tikzpicture
+
+
+%\RequirePackage{pstricks}
+
+
+%% UK => COLOUR
+%% US => COLOR
+
+\providecommand{\newColorRGB}[4]{%
+  \ifx\definecolor\undefined\relax\else\definecolor{#1}{rgb}{#2,#3,#4}\fi%
+  \ifx\newrgbcolor\undefined\relax\else\newrgbcolor{#1}{#2 #3 #4}\fi
+  \expandafter\def\csname #1\endcsname{\color{#1}}
+}
+
+
+%% To define colors
+%% #1 and #2  names used (tipically English/American + French
+%% #3 Red   0 <= ... <= 1
+%% #4 Green   0 <= ... <= 1
+%% #5 Blue   0 <= ... <= 1
+\providecommand{\newColorRGBdbl}[5]{%
+  \newColorRGB{#1}{#3}{#4}{#5}
+  \newColorRGB{#2}{#3}{#4}{#5}
+}
+
+\newColorRGBdbl{Black}{Noir}{0}{0}{0}
+%% UK => GREY
+%% US => GRAY
+\newColorRGBdbl{DarkGrey}{GrisFonce}{.5}{.5}{.5}
+\newColorRGBdbl{DarkGray}{GrisFonce}{.5}{.5}{.5}
+\newColorRGBdbl{Grey}{Gris}{.65}{.65}{.65}
+\newColorRGBdbl{Gray}{Gris}{.65}{.65}{.65}
+\newColorRGBdbl{VeryDarkGrey}{GrisTresFonce}{.3}{.3}{.3}
+\newColorRGBdbl{VeryDarkGray}{GrisTresFonce}{.3}{.3}{.3}
+\newColorRGBdbl{LightGrey}{GrisClair}{.8}{.8}{.8}
+\newColorRGBdbl{LightGray}{GrisClair}{.8}{.8}{.8}
+\newColorRGBdbl{White}{Blanc}{1}{1}{1}
+
+\newColorRGBdbl{DarkPurple}{VioletFonce}{.5}{0}{.6}
+\newColorRGBdbl{DeepPurple}{VioletFonce}{.5}{0}{.6}
+\newColorRGBdbl{Red}{Rouge}{1}{0}{0}
+\newColorRGBdbl{DarkRed}{RougeFonce}{.8}{0}{0}
+\newColorRGBdbl{UltraDarkGreen}{VertUltraFonce}{0}{.35}{0}
+\newColorRGBdbl{VeryDarkGreen}{VertTresFonce}{0}{.55}{0}
+\newColorRGBdbl{DarkGreen}{VertFonce}{0}{.7}{0}
+\newColorRGBdbl{DarkBlue}{BleuFonce}{0}{0}{.7}
+\newColorRGBdbl{Blue}{Bleu}{0}{0}{1}
+\newColorRGBdbl{LightBlue}{BleuClair}{0.5}{0.5}{1}
+\newColorRGBdbl{VeryLightBlue}{BleuTresClair}{0.75}{0.75}{1}
+\newColorRGBdbl{Green}{Vert}{0}{1}{0}
+\newColorRGBdbl{LightGreen}{VertClair}{.375}{1}{0.25}
+\newColorRGBdbl{VeryLightGreen}{VertTresClair}{.75}{1}{0.5}
+\newColorRGBdbl{Yellow}{Jaune}{1}{1}{0}
+\newColorRGBdbl{DarkYellow}{JauneFonce}{.9}{.9}{0}
+
+\newColorRGBdbl{Magenta}{Magenta}{1}{0}{1}
+
+\newColorRGBdbl{Brown}{Marron}{.65}{.16}{.16}  
+\newColorRGBdbl{DarkBrown}{MarronFonce}{.54}{.27}{.07}
+
+\newColorRGB{Purple}{.7}{0}{.7}
+\newColorRGB{Violet}{1}{0}{1}
+
+\newColorRGB{Pink}{1}{0}{1}
+\newColorRGB{DarkPink}{.9}{0}{.8}
+
+\newColorRGB{JauneFonce}{.8}{.8}{0}
+\newColorRGB{Orange}{1}{.55}{.45}
+\newColorRGBdbl{DarkOrange}{OrangeFonce}{1}{.5}{0}
+\newColorRGBdbl{VeryDarkOrange}{OrangeTresFonce}{.7}{.35}{0}
+
+
+%% to have a color scale
+\newColorRGB{ColDixNeuf}{1}{1}{1}  % blanc
+\newColorRGB{ColDixHuit}{1}{.85}{.75}  % marron - rose clair
+\newColorRGB{ColDixSept}{1}{.4}{.4}  % rouge
+\newColorRGB{ColDixSix}{.8}{.8}{.4}  % marron
+\newColorRGB{ColDixCinq}{0}{1}{0}  % vert
+\newColorRGB{ColDixQuatre}{.7}{1}{.7}   % vert clair
+\newColorRGB{ColDixTrois}{.75}{.75}{1}  % bleu clair 
+\newColorRGB{ColDixDeux}{0.5}{0.5}{1}  % bleu
+\newColorRGB{ColDixUn}{0}{0}{.8}  % bleu foncé
+\newColorRGB{ColDixZero}{0}{0}{0}  % noir
+
+

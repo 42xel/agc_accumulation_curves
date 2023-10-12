@@ -1,0 +1,52 @@
+
+
+
+
+
+
+create_lbss_machine << machine_euclide
+
+	beginning:	
+	a = 0;  	
+	a += 1*h;
+	>;		
+	labelTest:
+	Branch labelSwap, labelEnd, labelNext;
+	
+	labelNext:
+	a -= 1 * h; goto labelTest
+	
+	
+	
+	labelSwap:
+	a += 1*h;
+	h -= 1*a;
+	a += 1*h;
+	<;
+	h = 0;
+	h += 1*a;
+	a=0; goto beginning
+	labelEnd:
+	a += 1 *  h;
+	h = 0;
+	<;
+	h = 0;
+	h += 1*a;
+	a = 0;
+	end;
+machine_euclide
+
+
+create_lbss_configuration << configuration_euclide
+x = ["33/5", "24/7"]
+configuration_euclide
+
+toAGC_machine machine_euclide machine_euclide.agc
+
+toAGC_run machine_euclide.agc configuration_euclide run_euclide.agc run_euclide.pdf beginning 0 -1 0 1/10
+
+run machine_euclide configuration_euclide run -1 beginning
+
+print run
+
+
